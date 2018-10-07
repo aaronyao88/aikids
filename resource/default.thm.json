@@ -38,6 +38,8 @@
 		"CodeGame": "resource/game/CodeGame.exml",
 		"MoveForward": "resource/game/MoveForward.exml",
 		"Rotate": "resource/game/Rotate.exml",
-		"rotationDroplistButton": "resource/component/rotationDroplistButton.exml"
+		"rotationDroplistButton": "resource/component/rotationDroplistButton.exml",
+		"droplistButton": "resource/component/droplistButton.exml",
+		"eui.ItemRenderer": "resource/eui_skins/ItemRendererSkin.exml"
 	}
 }

@@ -197,7 +197,7 @@ var CodeGame = (function (_super) {
             var isHitBarrier = false;
             switch (btn.btnType) {
                 case "move":
-                    point = this.calPoint();
+                    point = this.calPoint(btn.moveNumber);
                     isHitBarrier = this.checkHitBarrier(point, this.barrier);
                     console.log("isHitBarrier:" + isHitBarrier);
                     if (isHitBarrier == false)
@@ -206,11 +206,19 @@ var CodeGame = (function (_super) {
                 case "rotate":
                     this.role.gotoAndPlay(this.actionArray[this.actionFlag], 1);
                     SoundManager.getInstance().playRotationSound();
-                    this.actionFlag++;
+                    console.log("btn.direction:" + btn.direction);
+                    if (btn.direction == "右") {
+                        this.actionFlag = this.actionFlag + 1;
+                    }
+                    else {
+                        this.actionFlag = this.actionFlag - 1;
+                    }
                     if (this.actionFlag == this.actionArray.length) {
                         this.actionFlag = 0;
                     }
-                    ;
+                    else if (this.actionFlag < 0) {
+                        this.actionFlag = this.actionArray.length - 1;
+                    }
                     break;
             }
             if (isHitBarrier) {
@@ -220,7 +228,7 @@ var CodeGame = (function (_super) {
             else {
                 var funcChange = function () {
                 };
-                egret.Tween.get(this.role, { onChange: funcChange }).to({ x: point.x, y: point.y }, 1000).call(this.startToRun, this, [button_array]);
+                egret.Tween.get(this.role, { onChange: funcChange }).to({ x: point.x, y: point.y }, btn.moveNumber * 1000).call(this.startToRun, this, [button_array]);
             }
         }
         else {
@@ -260,28 +268,28 @@ var CodeGame = (function (_super) {
         }
         SoundManager.getInstance().playRunSound();
     };
-    CodeGame.prototype.calPoint = function () {
+    CodeGame.prototype.calPoint = function (num) {
         var point = new egret.Point(this.role.x, this.role.y);
         var direction = this.actionFlag;
         switch (direction) {
             case 0:
-                if ((point.x + 144) < 720) {
-                    point.x = point.x + 144;
+                if ((point.x + num * 144) < 720) {
+                    point.x = point.x + num * 144;
                 }
                 break;
             case 1:
-                if ((point.y + 144) < 864) {
-                    point.y = point.y + 144;
+                if ((point.y + num * 144) < 864) {
+                    point.y = point.y + num * 144;
                 }
                 break;
             case 2:
-                if ((point.x - 144) > 0) {
-                    point.x = point.x - 144;
+                if ((point.x - num * 144) > 0) {
+                    point.x = point.x - num * 144;
                 }
                 break;
             case 3:
-                if ((point.y - 144) > 0) {
-                    point.y = point.y - 144;
+                if ((point.y - num * 144) > 0) {
+                    point.y = point.y - num * 144;
                 }
                 break;
             default:

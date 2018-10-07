@@ -3,6 +3,9 @@ class droplistButton extends eui.Component implements  eui.UIComponent {
 	public list:eui.List;  //步数选择下拉列表
 	public selectNumberBtn:eui.Button;     //步数选择按钮
 	public isEdit:boolean = false;  //步数选择按钮是否可以点击
+	public isOnStage:boolean=false;
+	public moveNumber:number = 1;
+	public direction:string ="右";
 
 	public btnID:number;
 	public btnType:string = "move";
@@ -25,7 +28,7 @@ class droplistButton extends eui.Component implements  eui.UIComponent {
 		this.init();
 	}
 
-	private init()
+	protected init()
 	{
 		//列表
         var list =new eui.List();
@@ -33,11 +36,9 @@ class droplistButton extends eui.Component implements  eui.UIComponent {
         list.x = 0;
         list.y=50;
 		list.width=150;
-        list.visible = false;
         list.selectedIndex=0;
 		this.list=list;
-		this.addChild(this.list);
-	    this.list.addEventListener(eui.ItemTapEvent.ITEM_TAP,this.onChange,this);
+
 		
 		//划线
 		this.line = new egret.Shape();
@@ -49,16 +50,26 @@ class droplistButton extends eui.Component implements  eui.UIComponent {
 		this.line.visible = false;
 	}
 
-	private onChange(evt:egret.Event)
+	protected onChange(evt:egret.Event)
 	{
 		this.selectNumberBtn.label =  this.list.selectedItem;
-		this.list.visible=false;
+		this.moveNumber =  this.list.selectedItem;
+		this.isOnStage = false;
+		this.removeChild(this.list);
 	}
 
 	private touch_tap(evt:egret.Event)
     {
-        this.list.visible = !this.list.visible;
-		console.log("this.list.visible:"+this.list.visible);
+        if(this.isOnStage)
+		{
+			this.removeChild(this.list);
+			this.isOnStage = false;
+		}else
+		{
+			this.addChild(this.list);
+			 this.list.addEventListener(eui.ItemTapEvent.ITEM_TAP,this.onChange,this);
+			this.isOnStage  = true;
+		}
 
     }
 
@@ -66,14 +77,11 @@ class droplistButton extends eui.Component implements  eui.UIComponent {
 	{
 		if(val)
 		{
-			this.isEdit =true;
-
-			//添加步数按钮
+			this.isEdit =true;	
 			this.selectNumberBtn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.touch_tap,this);
 		}else
 		{
 			this.isEdit =false;
-			//添加步数按钮
 			this.selectNumberBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP,this.touch_tap,this);
 
 		}

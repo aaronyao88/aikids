@@ -13,6 +13,9 @@ var droplistButton = (function (_super) {
     function droplistButton() {
         var _this = _super.call(this) || this;
         _this.isEdit = false; //步数选择按钮是否可以点击
+        _this.isOnStage = false;
+        _this.moveNumber = 1;
+        _this.direction = "右";
         _this.btnType = "move";
         _this.skinName = "resource/component/droplistButton.exml";
         return _this;
@@ -31,11 +34,8 @@ var droplistButton = (function (_super) {
         list.x = 0;
         list.y = 50;
         list.width = 150;
-        list.visible = false;
         list.selectedIndex = 0;
         this.list = list;
-        this.addChild(this.list);
-        this.list.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.onChange, this);
         //划线
         this.line = new egret.Shape();
         this.line.graphics.lineStyle(5, 0xff00ff);
@@ -47,21 +47,28 @@ var droplistButton = (function (_super) {
     };
     droplistButton.prototype.onChange = function (evt) {
         this.selectNumberBtn.label = this.list.selectedItem;
-        this.list.visible = false;
+        this.moveNumber = this.list.selectedItem;
+        this.isOnStage = false;
+        this.removeChild(this.list);
     };
     droplistButton.prototype.touch_tap = function (evt) {
-        this.list.visible = !this.list.visible;
-        console.log("this.list.visible:" + this.list.visible);
+        if (this.isOnStage) {
+            this.removeChild(this.list);
+            this.isOnStage = false;
+        }
+        else {
+            this.addChild(this.list);
+            this.list.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.onChange, this);
+            this.isOnStage = true;
+        }
     };
     droplistButton.prototype.setEdit = function (val) {
         if (val) {
             this.isEdit = true;
-            //添加步数按钮
             this.selectNumberBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_tap, this);
         }
         else {
             this.isEdit = false;
-            //添加步数按钮
             this.selectNumberBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_tap, this);
         }
     };

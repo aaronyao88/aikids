@@ -57,7 +57,7 @@
 			<ns1:rotationDroplistButton id="obj_rotation" width="150" height="50" x="16" y="31"/>
 		</e:Group>
 		<e:Scroller id="sc_code_panel" width="720" height="156" x="0" y="114" anchorOffsetX="0" anchorOffsetY="0" scaleX="1" scaleY="1">
-			<e:Rect id="code_rect" fillColor="0x13f2df" width="720" x="4" y="301"/>
+			<e:Rect id="code_rect" fillColor="0x13f2df" width="720" x="60" y="2"/>
 		</e:Scroller>
 	</e:Group>
 	<e:Group id="gp_win" width="640" height="522" x="38" y="240" anchorOffsetX="0" anchorOffsetY="0" visible="false">

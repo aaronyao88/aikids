@@ -9,7 +9,7 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 	private bone: eui.Image;        // 目标物
 //	private btn_roll_right: eui.Button;  //旋转按钮
 //	private btn_drag: MoveForward;       //移动按钮
-	private obj_move:droplistButton;       //多步移动按钮
+	private obj_move:droplistButton;       //移动按钮
 	private obj_rotation:rotationDroplistButton; //旋转按钮
 	private btn_nextlevel: eui.Button;   //下一关按钮
 	private btn_return: eui.Button; //返回按钮
@@ -260,18 +260,30 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 			var isHitBarrier = false;
 			switch (btn.btnType) {
 				case "move":
-					point = this.calPoint();
+					point = this.calPoint(btn.moveNumber);
 					isHitBarrier = this.checkHitBarrier(point,this.barrier);
 					console.log("isHitBarrier:"+isHitBarrier);	
 					if(isHitBarrier==false) this.roleMCStartPlay();
 					break;
 				case "rotate":
+
 					this.role.gotoAndPlay(this.actionArray[this.actionFlag], 1);
 					SoundManager.getInstance().playRotationSound();
-					this.actionFlag++;
+
+					console.log("btn.direction:"+btn.direction);
+					if(btn.direction=="右")
+					{
+						this.actionFlag=this.actionFlag+1;
+					}else{
+						this.actionFlag=this.actionFlag-1;
+					}
+					
 					if (this.actionFlag == this.actionArray.length) {
 						this.actionFlag = 0;
-					};
+					}else if(this.actionFlag < 0)
+					{
+						this.actionFlag =this.actionArray.length-1
+					}
 					break;
 			}
 
@@ -283,8 +295,8 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 				var funcChange = (): void => {
 
 				}
-				egret.Tween.get(this.role, { onChange: funcChange }).to({ x: point.x, y: point.y }, 1000).call(this.startToRun, this, [button_array]);
-			}
+			  egret.Tween.get(this.role, { onChange: funcChange }).to({ x: point.x, y: point.y }, btn.moveNumber *1000).call(this.startToRun, this, [button_array]);
+		}
 
 		} else {
 			this.checkHitTarget();
@@ -333,30 +345,30 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 		SoundManager.getInstance().playRunSound();
 	}
 
-	private calPoint(): egret.Point {
+	private calPoint(num:number): egret.Point {
 		var point = new egret.Point(this.role.x, this.role.y);
 		var direction: number = this.actionFlag
 
 		switch (direction) {
 			case 0:
-				if ((point.x + 144) < 720) {
-					point.x = point.x + 144
+				if ((point.x + num*144) < 720) {
+					point.x = point.x + num*144
 				}
 				break;
 			case 1:
-				if ((point.y + 144) < 864) {
-					point.y = point.y + 144
+				if ((point.y + num*144) < 864) {
+					point.y = point.y + num*144
 				}
 
 				break;
 			case 2:
-				if ((point.x - 144) > 0) {
-					point.x = point.x - 144
+				if ((point.x - num*144) > 0) {
+					point.x = point.x - num*144
 				}
 				break;
 			case 3:
-				if ((point.y - 144) > 0) {
-					point.y = point.y - 144
+				if ((point.y - num*144) > 0) {
+					point.y = point.y - num*144
 				}
 				break;
 			default:
