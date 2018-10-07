@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="CodeGameSkin" width="720" height="1134" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" >
+	<w:Config id="163e88a1954" ></w:Config>
+	<e:Group width="720" height="862" x="0" y="0" anchorOffsetX="0" anchorOffsetY="0">
+		<e:Rect width="144" height="144" x="0" y="0" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x6CD306" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="576.22" y="0" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x6CD306" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="432.22" y="144" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x6CD306" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="144" y="0" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x54A503" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="288.22" y="144" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x54A503" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="0" y="144" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x54A503" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="288.22" y="0" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x6CD306" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="144" y="144" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x6CD306" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="432.22" y="0" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x54A503" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="576.22" y="144" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x54A503" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="0" y="288" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x6CD306" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="576.22" y="288" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x6CD306" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="432.22" y="432" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x6CD306" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="144" y="288" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x54A503" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="288.22" y="432" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x54A503" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="0" y="432" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x54A503" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="288.22" y="288" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x6CD306" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="144" y="432" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x6CD306" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="432.22" y="288" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x54A503" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="576.22" y="432" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x54A503" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="0" y="576" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x6CD306" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="576.22" y="576" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x6CD306" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="432.22" y="720" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x6CD306" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="144" y="576" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x54A503" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="288.22" y="720" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x54A503" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="0" y="720" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x54A503" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="288.22" y="576" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x6CD306" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="144" y="720" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x6CD306" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="432.22" y="576" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x54A503" scaleX="1" scaleY="1"/>
+		<e:Rect width="144" height="144" x="576.22" y="720" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x54A503" scaleX="1" scaleY="1"/>
+		<e:Rect width="720" height="270" x="0" y="864" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x0964f9"/>
+	</e:Group>
+	<e:Image id="role" source="dog_png" x="18" y="14" width="108" height="108" anchorOffsetX="0" anchorOffsetY="0"/>
+	<e:Button id="move" label="移动" x="102" y="927" anchorOffsetX="0" width="144" anchorOffsetY="0" height="72">
+		<e:skinName>
+			<e:Skin states="up,down,disabled">
+			<e:Image width="100%" height="100%" source="GameBG3_jpg"/>
+			<e:Label id="labelDisplay" horizontalCenter="0" verticalCenter="0" textColor="0x000000"/>
+			</e:Skin>
+		</e:skinName>
+	</e:Button>
+</e:Skin>

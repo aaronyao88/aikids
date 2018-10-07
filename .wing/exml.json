@@ -1,0 +1,60 @@
+{
+  "1637e008968": {
+    "path": "Game/SceneBegin.ts",
+    "class": "SceneBegin",
+    "parentPath": ""
+  },
+  "1637e2d28c6": {
+    "path": "Game/GameSetting.ts",
+    "class": "GameSetting",
+    "parentPath": ""
+  },
+  "163c4bf59e3": {
+    "path": "Game/SceneLevel.ts",
+    "class": "SceneLevel",
+    "parentPath": ""
+  },
+  "163c4e140e5": {
+    "path": "Game/LevelIcon.ts",
+    "class": "LevelIcon",
+    "parentPath": ""
+  },
+  "163c4f7bcec": {
+    "path": "Game/test.ts",
+    "class": "test",
+    "parentPath": ""
+  },
+  "163c59af9a6": {
+    "path": "Game/LevelIcon.ts",
+    "class": "LevelIcon",
+    "parentPath": ""
+  },
+  "163d76c719d": {
+    "path": "Game/SceneGame.ts",
+    "class": "SceneGame",
+    "parentPath": ""
+  },
+  "163d7851d6a": {
+    "path": "Game/Word.ts",
+    "class": "Word",
+    "parentPath": ""
+  },
+  "163e88a1954": {
+    "path": "Game/CodeGame.ts",
+    "class": "CodeGame",
+    "parentPath": ""
+  },
+  "163ea43f435": {
+    "path": "Game/MoveForward.ts",
+    "class": "MoveForward",
+    "parentPath": ""
+  },
+  "1642c7f0afb": {
+    "path": "Game/Rotate.ts",
+    "class": "Rotate",
+    "parentPath": ""
+  },
+  "global": {
+    "globalAutoLayerMarkEnable": true
+  }
+}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="RotateSkin" width="72" height="72" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" >
+	<w:Config id="1642c7f0afb" ></w:Config>
+	<e:Button id="btn_rotate" label="旋转" x="0" y="0" width="72" height="72">
+		<e:skinName>
+		<e:Skin states="up,down,disabled">
+			<e:Image width="100%" height="100%" source="GameBG3_jpg"/>
+			<e:Label id="labelDisplay" horizontalCenter="0" verticalCenter="0" textColor="0x000000"/>
+		</e:Skin>
+		</e:skinName>
+	</e:Button>
+</e:Skin>

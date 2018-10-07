@@ -1,0 +1,22 @@
+{
+    "autoGenerateExmlsList": true,
+    "exmls": [
+        "resource/game/AnswerWord.exml",
+        "resource/game/GameSetting.exml",
+        "resource/game/LevelIcon.exml",
+        "resource/game/SceneBegin.exml",
+        "resource/game/SceneGame.exml",
+        "resource/game/SceneLevel.exml",
+        "resource/game/Word.exml"
+    ],
+    "path": "resource/default.thm.json",
+    "skins": {
+        "SceneBegin": "resource/game/SceneBegin.exml",
+        "GameSetting": "resource/game/GameSetting.exml",
+        "SceneLevel": "resource/game/SceneLevel.exml",
+        "LevelIcon": "resource/game/LevelIcon.exml",
+        "SceneGame": "resource/game/SceneGame.exml",
+        "Word": "resource/game/Word.exml",
+        "CodeGame": "resource/game/CodeGame.exml"
+    }
+}
