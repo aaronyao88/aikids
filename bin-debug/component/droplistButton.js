@@ -39,8 +39,8 @@ var droplistButton = (function (_super) {
         //划线
         this.line = new egret.Shape();
         this.line.graphics.lineStyle(5, 0xff00ff);
-        this.line.graphics.moveTo(72, 0);
-        this.line.graphics.lineTo(72, 72);
+        this.line.graphics.moveTo(this.width, 0);
+        this.line.graphics.lineTo(this.width, this.height);
         this.line.graphics.endFill();
         this.addChild(this.line);
         this.line.visible = false;
@@ -51,7 +51,7 @@ var droplistButton = (function (_super) {
     };
     droplistButton.prototype.touch_tap = function (evt) {
         this.list.visible = !this.list.visible;
-        console.log(this.list.visible);
+        console.log("this.list.visible:" + this.list.visible);
     };
     droplistButton.prototype.setEdit = function (val) {
         if (val) {

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="rotationDroplistButtonSkin" width="150" height="50" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" >
+	<w:Config id="1664edf489f" ></w:Config>
+	<e:Rect width="150" height="50" x="0" y="0" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x770808" strokeColor="0x42030F" strokeWeight="3"/>
+	<e:Label text="旋转" x="5" y="10"/>
+	<e:Button id="selectNumberBtn" label="1" x="71" y="6" anchorOffsetX="0" width="35" anchorOffsetY="0" height="35" visible="false">
+		<e:skinName>
+		<e:Skin states="up,down,disabled">
+			<e:Image width="40" height="40" source="button_up_png" source.down="button_down_png" anchorOffsetX="0" anchorOffsetY="0"/>
+			<e:Label id="labelDisplay" horizontalCenter="0" verticalCenter="0" verticalAlign="middle"/>
+		</e:Skin>
+		</e:skinName>
+	</e:Button>
+</e:Skin>

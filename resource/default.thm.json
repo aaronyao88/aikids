@@ -2,6 +2,20 @@
 	"autoGenerateExmlsList": true,
 	"exmls": [
 		"resource/component/droplistButton.exml",
+		"resource/component/rotationDroplistButton.exml",
+		"resource/eui_skins/ButtonSkin.exml",
+		"resource/eui_skins/CheckBoxSkin.exml",
+		"resource/eui_skins/HScrollBarSkin.exml",
+		"resource/eui_skins/HSliderSkin.exml",
+		"resource/eui_skins/ItemRendererSkin.exml",
+		"resource/eui_skins/PanelSkin.exml",
+		"resource/eui_skins/ProgressBarSkin.exml",
+		"resource/eui_skins/RadioButtonSkin.exml",
+		"resource/eui_skins/ScrollerSkin.exml",
+		"resource/eui_skins/TextInputSkin.exml",
+		"resource/eui_skins/ToggleSwitchSkin.exml",
+		"resource/eui_skins/VScrollBarSkin.exml",
+		"resource/eui_skins/VSliderSkin.exml",
 		"resource/game/AnswerWord.exml",
 		"resource/game/CodeGame.exml",
 		"resource/game/GameSetting.exml",
@@ -23,6 +37,7 @@
 		"Word": "resource/game/Word.exml",
 		"CodeGame": "resource/game/CodeGame.exml",
 		"MoveForward": "resource/game/MoveForward.exml",
-		"Rotate": "resource/game/Rotate.exml"
+		"Rotate": "resource/game/Rotate.exml",
+		"rotationDroplistButton": "resource/component/rotationDroplistButton.exml"
 	}
 }

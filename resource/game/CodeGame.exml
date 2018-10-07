@@ -37,8 +37,6 @@
 	<e:Group id="gp_control" width="720" height="268" y="864" anchorOffsetX="0" anchorOffsetY="0">
 		<e:Group id="gp_rect" width="720" height="116" x="0" y="0" scaleX="1" scaleY="1" anchorOffsetX="0" anchorOffsetY="0">
 			<e:Rect id="button_rect" width="720" height="112" x="0" y="0" anchorOffsetX="0" anchorOffsetY="0" fillColor="0x0964f9" scaleX="1" scaleY="1"/>
-			<ns1:Rotate id="btn_roll_right" label="Button" x="32" y="20"/>
-			<ns1:MoveForward id="btn_drag" label="Button" x="130" y="20"/>
 			<e:Button id="btn_return" label="返回" x="564" y="15" anchorOffsetX="0" width="144" anchorOffsetY="0" height="72" scaleX="1" scaleY="1">
 				<e:skinName>
 				<e:Skin states="up,down,disabled">
@@ -55,7 +53,8 @@
 				</e:Skin>
 				</e:skinName>
 			</e:Button>
-			<ns1:droplistButton id="obj_move" width="150" height="50" x="216" y="31" anchorOffsetX="0" anchorOffsetY="0" skinName="droplistButtonSkin"/>
+			<ns1:droplistButton id="obj_move" width="150" height="50" x="210" y="31" anchorOffsetX="0" anchorOffsetY="0" skinName="droplistButtonSkin"/>
+			<ns1:rotationDroplistButton id="obj_rotation" width="150" height="50" x="16" y="31"/>
 		</e:Group>
 		<e:Scroller id="sc_code_panel" width="720" height="156" x="0" y="114" anchorOffsetX="0" anchorOffsetY="0" scaleX="1" scaleY="1">
 			<e:Rect id="code_rect" fillColor="0x13f2df" width="720" x="4" y="301"/>

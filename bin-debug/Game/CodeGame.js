@@ -13,7 +13,7 @@ var CodeGame = (function (_super) {
     function CodeGame() {
         var _this = _super.call(this) || this;
         _this.btn_array = new Array(); //在运行区的按钮
-        _this.barrier = [];
+        _this.barrier = []; //障碍物
         _this._touchStatus = false; //当前触摸状态，按下时，值为true  
         _this._distance = new egret.Point(); //鼠标点击时，鼠标与按钮的位置差
         _this._original = new egret.Point(); // btn原始位置
@@ -45,10 +45,10 @@ var CodeGame = (function (_super) {
         this.role = new egret.MovieClip(mcFactory.generateMovieClipData("walk"));
         this.gp_map.addChild(this.role);
         //监听各个按钮事件
-        this.btn_drag.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBeginMove, this);
-        this.btn_drag.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
-        this.btn_roll_right.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBeginMove, this);
-        this.btn_roll_right.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
+        this.obj_move.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBeginMove, this);
+        this.obj_move.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
+        this.obj_rotation.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBeginMove, this);
+        this.obj_rotation.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
         this.btn_run.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_run, this);
         this.btn_return.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_return, this);
         this.btn_nextlevel.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_nextlevel, this);
@@ -100,10 +100,10 @@ var CodeGame = (function (_super) {
         var target = event.currentTarget;
         //创建可移动按钮
         if (event.currentTarget.btnType == 'move') {
-            this.btn_temp = new MoveForward();
+            this.btn_temp = new droplistButton();
         }
         else {
-            this.btn_temp = new Rotate();
+            this.btn_temp = new rotationDroplistButton();
         }
         this.btn_temp.btnID = this.btn_id;
         this.btn_id++;
@@ -137,7 +137,6 @@ var CodeGame = (function (_super) {
                         }
                         return false;
                     });
-                    console.log(this._btnIntersectId);
                     if (typeof (this._btnIntersectId) != "undefined" && this._btnIntersectId != null) {
                         this.btn_array[this._btnIntersectId].line.visible = true;
                     }
@@ -156,16 +155,18 @@ var CodeGame = (function (_super) {
                 console.log("插入：" + this._btnIntersectId + 1);
                 this.btn_array[this._btnIntersectId].line.visible = false;
                 //按钮数组插入在两个按钮中间
+                this.btn_temp.setEdit(true);
                 this.btn_array.splice(this._btnIntersectId + 1, 0, this.btn_temp);
             }
             else {
                 //否则插入在最后
+                this.btn_temp.setEdit(true);
                 this.btn_array.push(this.btn_temp);
             }
             this.btn_temp.y = 122;
             //更新布局
             for (var i = 0; i < this.btn_array.length; i++) {
-                this.btn_array[i].x = i * 72;
+                this.btn_array[i].x = i * this.btn_array[i].width;
             }
             this.btn_temp.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchCodeBeginMove, this);
             this.btn_temp.addEventListener(egret.TouchEvent.TOUCH_END, this.touchCodeEndMove, this);
@@ -291,8 +292,8 @@ var CodeGame = (function (_super) {
     //移动运行区域的按钮
     CodeGame.prototype.touchCodeBeginMove = function (event) {
         SoundManager.getInstance().playClick();
-        var dragObject = event.target;
-        this.gp_control.setChildIndex(dragObject, 20);
+        var dragObject = event.currentTarget;
+        //	this.gp_control.setChildIndex(dragObject,20);
         this._original.x = dragObject.x;
         this._original.y = dragObject.y;
         this._touchStatus = true;
@@ -304,7 +305,7 @@ var CodeGame = (function (_super) {
     //运行区域按钮在移动
     CodeGame.prototype.touchCodeMove = function (event) {
         if (this._touchStatus) {
-            var target = event.target;
+            var target = event.currentTarget;
             target.x = event.stageX - this._distance.x;
             target.y = event.stageY - this._distance.y;
             //console.log("touchCodeMove True, x:"+ target.x);
@@ -317,7 +318,7 @@ var CodeGame = (function (_super) {
     CodeGame.prototype.touchCodeEndMove = function (event) {
         var _this = this;
         SoundManager.getInstance().playClick();
-        var target = event.target;
+        var target = event.currentTarget;
         var id = target.btnID;
         this._touchStatus = false;
         target.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.touchCodeMove, this);
@@ -334,7 +335,7 @@ var CodeGame = (function (_super) {
             });
             //更新布局
             for (var i = 0; i < this.btn_array.length; i++) {
-                this.btn_array[i].x = i * 72;
+                this.btn_array[i].x = i * this.btn_array[i].width;
             }
         }
         else {

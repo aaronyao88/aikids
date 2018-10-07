@@ -1,8 +1,8 @@
 class droplistButton extends eui.Component implements  eui.UIComponent {
 	
-	private list:eui.List;  //步数选择下拉列表
-	private selectNumberBtn:eui.Button;     //步数选择按钮
-	private isEdit:boolean = false;  //步数选择按钮是否可以点击
+	public list:eui.List;  //步数选择下拉列表
+	public selectNumberBtn:eui.Button;     //步数选择按钮
+	public isEdit:boolean = false;  //步数选择按钮是否可以点击
 
 	public btnID:number;
 	public btnType:string = "move";
@@ -38,11 +38,12 @@ class droplistButton extends eui.Component implements  eui.UIComponent {
 		this.list=list;
 		this.addChild(this.list);
 	    this.list.addEventListener(eui.ItemTapEvent.ITEM_TAP,this.onChange,this);
+		
 		//划线
 		this.line = new egret.Shape();
 		this.line.graphics.lineStyle(5, 0xff00ff); 
-		this.line.graphics.moveTo( 72,0 );
-        this.line.graphics.lineTo( 72, 72 );
+		this.line.graphics.moveTo( this.width,0 );
+        this.line.graphics.lineTo( this.width, this.height );
         this.line.graphics.endFill();
 		this.addChild(this.line);
 		this.line.visible = false;
@@ -57,7 +58,7 @@ class droplistButton extends eui.Component implements  eui.UIComponent {
 	private touch_tap(evt:egret.Event)
     {
         this.list.visible = !this.list.visible;
-		console.log(this.list.visible);
+		console.log("this.list.visible:"+this.list.visible);
 
     }
 
@@ -66,6 +67,7 @@ class droplistButton extends eui.Component implements  eui.UIComponent {
 		if(val)
 		{
 			this.isEdit =true;
+
 			//添加步数按钮
 			this.selectNumberBtn.addEventListener(egret.TouchEvent.TOUCH_TAP,this.touch_tap,this);
 		}else

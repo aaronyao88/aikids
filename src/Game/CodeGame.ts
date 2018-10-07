@@ -7,14 +7,15 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 	//UI
 	private role: egret.MovieClip;  //主角
 	private bone: eui.Image;        // 目标物
-	private btn_roll_right: eui.Button;  //旋转按钮
-	private btn_drag: MoveForward;       //移动按钮
+//	private btn_roll_right: eui.Button;  //旋转按钮
+//	private btn_drag: MoveForward;       //移动按钮
 	private obj_move:droplistButton;       //多步移动按钮
+	private obj_rotation:rotationDroplistButton; //旋转按钮
 	private btn_nextlevel: eui.Button;   //下一关按钮
 	private btn_return: eui.Button; //返回按钮
 	private btn_run: eui.Button;   //执行动作按钮
-	private btn_temp: MoveForward;   //拖动按钮后创建的临时按钮
-	private btn_array: Array<MoveForward> = new Array<MoveForward>();  //在运行区的按钮
+	private btn_temp: droplistButton;   //拖动按钮后创建的临时按钮
+	private btn_array: Array<droplistButton> = new Array<droplistButton>();  //在运行区的按钮
 	private gp_map: eui.Group;             //地图区  1
 	private gp_control: eui.Group;         //控制区  2
 	private gp_rect: eui.Group;            //按钮区  2-1
@@ -70,10 +71,10 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 		this.gp_map.addChild(this.role);
 
 		//监听各个按钮事件
-		this.btn_drag.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBeginMove, this);
-		this.btn_drag.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
-		this.btn_roll_right.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBeginMove, this);
-		this.btn_roll_right.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
+		this.obj_move.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBeginMove, this);
+		this.obj_move.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
+		this.obj_rotation.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBeginMove, this);
+		this.obj_rotation.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
 		this.btn_run.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_run, this);
 		this.btn_return.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_return, this);
 		this.btn_nextlevel.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_nextlevel, this);
@@ -117,7 +118,7 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 			for (var i = 0; i < this.btn_array.length; i++) {
 				this.gp_control.removeChild(this.btn_array[i]);
 			}
-			this.btn_array = new Array<MoveForward>();
+			this.btn_array = new Array<droplistButton>();
 
 		}
 
@@ -134,9 +135,9 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 		var target = event.currentTarget;
 		//创建可移动按钮
 		if (event.currentTarget.btnType == 'move') {
-			this.btn_temp = new MoveForward();
+			this.btn_temp = new droplistButton();
 		} else {
-			this.btn_temp = new Rotate();
+			this.btn_temp = new rotationDroplistButton();
 		}
 		this.btn_temp.btnID=this.btn_id;
 		this.btn_id++;
@@ -171,7 +172,7 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 				{
 				
 					this.btn_array.some((val, idx, array) => {
-						var j: MoveForward = val;
+						var j: droplistButton = val;
 						if (this.btn_temp.isHit(j))
 						{
 
@@ -182,7 +183,6 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 						return false;
 					});
 					
-					console.log(this._btnIntersectId);
 					if(typeof(this._btnIntersectId)!= "undefined" && this._btnIntersectId != null)
 					{
 						this.btn_array[this._btnIntersectId].line.visible=true;	
@@ -210,17 +210,20 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 				console.log( "插入："+this._btnIntersectId+1);
 				this.btn_array[this._btnIntersectId].line.visible =false;
 				//按钮数组插入在两个按钮中间
+				this.btn_temp.setEdit(true);
 				this.btn_array.splice(this._btnIntersectId+1,0,this.btn_temp);
 			
 			}else{
 				//否则插入在最后
+				this.btn_temp.setEdit(true);
 				this.btn_array.push(this.btn_temp);
 			}
 			this.btn_temp.y = 122;
 			//更新布局
 			for (var i = 0; i < this.btn_array.length; i++) {
-				this.btn_array[i].x = i * 72;
+				this.btn_array[i].x = i * this.btn_array[i].width;
 			}
+			
 			this.btn_temp.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchCodeBeginMove, this);
 			this.btn_temp.addEventListener(egret.TouchEvent.TOUCH_END, this.touchCodeEndMove, this);				
 		} else {
@@ -242,7 +245,7 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 
 	}
 
-	private startToRun(btn_arr: MoveForward[]) {
+	private startToRun(btn_arr: droplistButton[]) {
 
 
 		var button_array = btn_arr.concat();
@@ -250,7 +253,7 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 
 
 		if (button_array.length > 0) {
-			var btn: MoveForward = button_array[0];
+			var btn: droplistButton = button_array[0];
 			console.log("btn:" + btn.btnType);
 			button_array.splice(0, 1);
 			var point: egret.Point = new egret.Point(this.role.x, this.role.y);
@@ -368,8 +371,8 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 	private touchCodeBeginMove(event: egret.TouchEvent) {
 
 		SoundManager.getInstance().playClick();
-		var dragObject = event.target;
-		this.gp_control.setChildIndex(dragObject,20);
+		var dragObject = event.currentTarget;
+	//	this.gp_control.setChildIndex(dragObject,20);
 		this._original.x = dragObject.x;
 		this._original.y = dragObject.y;
 		this._touchStatus = true;
@@ -385,7 +388,7 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 	private touchCodeMove(event: egret.TouchEvent) {
 		if(this._touchStatus)
 		{
-			var target = <MoveForward>event.target;
+			var target = <droplistButton>event.currentTarget;
 			target.x = event.stageX - this._distance.x;
 			target.y = event.stageY - this._distance.y;
 			//console.log("touchCodeMove True, x:"+ target.x);
@@ -400,7 +403,7 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 	//运行区域按钮放下
 	private touchCodeEndMove(event: egret.TouchEvent) {
 		SoundManager.getInstance().playClick();
-		var target = <MoveForward>event.target;
+		var target = <droplistButton>event.currentTarget;
 		var id = target.btnID;
 		this._touchStatus = false;
 		target.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.touchCodeMove, this);
@@ -413,7 +416,7 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 			this.gp_control.removeChild(target);
 			//更新数组
 			this.btn_array.forEach((val, idx, array) => {
-				var j: MoveForward = <MoveForward>val;
+				var j: droplistButton = <droplistButton>val;
 				if (j.btnID == id) {
 					this.btn_array.splice(idx, 1);
 				}
@@ -421,7 +424,7 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 
 			//更新布局
 			for (var i = 0; i < this.btn_array.length; i++) {
-				this.btn_array[i].x = i * 72;
+				this.btn_array[i].x = i * this.btn_array[i].width;
 			}
 
 		} else {
