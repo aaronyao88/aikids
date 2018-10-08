@@ -263,14 +263,10 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 					point = this.calPoint(btn.moveNumber);
 					isHitBarrier = this.checkHitBarrier(point,this.barrier);
 					console.log("isHitBarrier:"+isHitBarrier);	
-					if(isHitBarrier==false) this.roleMCStartPlay();
+					if(isHitBarrier==false) this.roleMCStartPlay(btn.moveNumber);
 					break;
 				case "rotate":
-
-					this.role.gotoAndPlay(this.actionArray[this.actionFlag], 1);
-					SoundManager.getInstance().playRotationSound();
-
-					console.log("btn.direction:"+btn.direction);
+					this.playRotation(btn.direction);
 					if(btn.direction=="右")
 					{
 						this.actionFlag=this.actionFlag+1;
@@ -278,11 +274,11 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 						this.actionFlag=this.actionFlag-1;
 					}
 					
-					if (this.actionFlag == this.actionArray.length) {
+					if (this.actionFlag == 4) {
 						this.actionFlag = 0;
 					}else if(this.actionFlag < 0)
 					{
-						this.actionFlag =this.actionArray.length-1
+						this.actionFlag = 3
 					}
 					break;
 			}
@@ -322,10 +318,55 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 
 	}
 
-	private roleMCStartPlay() {
-		var direction: number = this.actionFlag;
+	private playRotation(direction:string)
+	{
+		SoundManager.getInstance().playRotationSound();
+		var orientation: number = this.actionFlag;
+		switch(orientation)
+		{
+			case 0:
+				if(direction=="右"){
+					this.role.gotoAndPlay("righttodown", 1);
+				}else
+				{
+					this.role.gotoAndPlay("righttoup",1);
+				}
+				break;
+			case 1:
+				if(direction=="右"){
+					this.role.gotoAndPlay("downtoleft", 1);
+				}else
+				{
+					this.role.gotoAndPlay("downtoright",1);
+				}
+				break;
+			case 2:
+				if(direction=="右"){
+					this.role.gotoAndPlay("lefttoup", 1);
+				}else
+				{
+					this.role.gotoAndPlay("lefttodown",1);
+				}
+				break;
+			case 3:
+				if(direction=="右"){
+					this.role.gotoAndPlay("uptoright", 1);
+				}else
+				{
+					this.role.gotoAndPlay("uptoleft",1);
+				}
+				break;	
+			default:
+				console.log("playRotation error");
+
+		}
+
+	}
+
+	private roleMCStartPlay(num:number) {
+		var orientation: number = this.actionFlag;
 		
-		switch (direction) {
+		switch (orientation) {
 			case 0:
 				this.role.gotoAndPlay("right", -1);
 				break;
@@ -340,16 +381,16 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 				this.role.gotoAndPlay("up", -1);
 				break;
 			default:
-				console.log("error");
+				console.log("roleMCStartPlay error");
 		}
-		SoundManager.getInstance().playRunSound();
+		SoundManager.getInstance().playRunSound(num);
 	}
 
 	private calPoint(num:number): egret.Point {
 		var point = new egret.Point(this.role.x, this.role.y);
-		var direction: number = this.actionFlag
+		var orientation: number = this.actionFlag
 
-		switch (direction) {
+		switch (orientation) {
 			case 0:
 				if ((point.x + num*144) < 720) {
 					point.x = point.x + num*144

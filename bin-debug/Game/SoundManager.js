@@ -51,9 +51,9 @@ var SoundManager = (function () {
         }
     };
     //跑步声音
-    SoundManager.prototype.playRunSound = function () {
+    SoundManager.prototype.playRunSound = function (num) {
         if (this.run_sound && this.isEffect) {
-            this.run_sound.play(0, 1);
+            this.run_sound.play(0, num);
         }
     };
     //旋转声音

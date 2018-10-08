@@ -84,9 +84,9 @@ class SoundManager {
     }
 
     //跑步声音
-    public playRunSound(){
+    public playRunSound(num:number){
          if(this.run_sound && this.isEffect){
-            this.run_sound.play(0,1);
+            this.run_sound.play(0,num);
         }       
     }
 
