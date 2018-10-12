@@ -93,7 +93,6 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 		console.log(this.leveldata);
 		this.role.anchorOffsetX = this.role.width / 2;
 		this.role.anchorOffsetY = this.role.height / 2;
-		this.role.rotation = 0;
 		this.role.x = this.leveldata.start.x * 144 - 144 / 1.5;
 		this.role.y = this.leveldata.start.y * 144 - 144 / 2;
 		this.role.scaleX = 1.2;
@@ -107,7 +106,6 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 		//初始化障碍
 		this.barrier.push(this.createBarrier(3, 1));
 		this.barrier.push(this.createBarrier(5, 4));
-
 		this.barrier.forEach(element => {
 			this.gp_map.addChild(element);
 		});
@@ -160,6 +158,7 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 			this.hit_result = this.btn_temp.isHit(this.sc_code_panel);
 			console.log("hit_result:" + this.hit_result);
 
+			//按钮与按钮间的插入线判断
 			if (typeof (this._btnIntersectId) != "undefined" && this._btnIntersectId != null) {
 				this.btn_array[this._btnIntersectId].line.visible = false;
 			}
@@ -233,8 +232,32 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 		this.role.x = this.leveldata.start.x * 144 - 144 / 2;
 		this.role.y = this.leveldata.start.y * 144 - 144 / 2;
 		this.actionFlag = 0;
-		this.startToRun(this.btn_array);
+		var runData: Array<droplistButton> = this.prepareRunDdata(this.btn_array);
+		this.startToRun(runData);
+		
 
+	}
+
+	private prepareRunDdata(btn_arr: droplistButton[])
+	{
+		var runData: Array<droplistButton> = new Array<droplistButton>();
+		btn_arr.forEach( (val, idx, array) => {
+			var data:droplistButton = val;
+			if(val.btnType == "move"){
+				for(var i=0;i<data.moveNumber;i++)
+				{
+					
+					runData.push(data);
+				}
+
+			}else{
+				runData.push(data)
+				
+			}
+			
+		});
+		console.log("runData length:" + runData.length);
+		return runData;
 	}
 
 	private startToRun(btn_arr: droplistButton[]) {
@@ -252,10 +275,10 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 			var isHitBarrier = false;
 			switch (btn.btnType) {
 				case "move":
-					point = this.calPoint(btn.moveNumber);
+					point = this.calPoint(1);
 					isHitBarrier = this.checkHitBarrier(point, this.barrier);
 					console.log("isHitBarrier:" + isHitBarrier);
-					if (isHitBarrier == false) this.roleMCStartPlay(btn.moveNumber);
+					if (isHitBarrier == false) this.roleMCStartPlay(1);
 					break;
 				case "rotate":
 					this.playRotation(btn.direction);
@@ -280,7 +303,7 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 				var funcChange = (): void => {
 
 				}
-				egret.Tween.get(this.role, { onChange: funcChange }).to({ x: point.x, y: point.y }, btn.moveNumber * 1000).call(this.startToRun, this, [button_array]);
+				egret.Tween.get(this.role, { onChange: funcChange }).to({ x: point.x, y: point.y }, 1 * 1000).call(this.startToRun, this, [button_array]);
 			}
 
 		} else {

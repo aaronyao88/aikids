@@ -14,11 +14,10 @@ var CodeGame = (function (_super) {
         var _this = _super.call(this) || this;
         _this.btn_array = new Array(); //在运行区的按钮
         _this.barrier = []; //障碍物
+        //数据变量
         _this._touchStatus = false; //当前触摸状态，按下时，值为true  
         _this._distance = new egret.Point(); //鼠标点击时，鼠标与按钮的位置差
         _this._original = new egret.Point(); // btn原始位置
-        /**MC拥有的动作列表**/
-        _this.actionArray = ["righttodown", "downtoleft", "lefttoup", "uptoright"];
         _this.btn_id = 0; //创建按钮的ID
         console.log("CodeGame constructor");
         return _this;
@@ -67,7 +66,6 @@ var CodeGame = (function (_super) {
         console.log(this.leveldata);
         this.role.anchorOffsetX = this.role.width / 2;
         this.role.anchorOffsetY = this.role.height / 2;
-        this.role.rotation = 0;
         this.role.x = this.leveldata.start.x * 144 - 144 / 1.5;
         this.role.y = this.leveldata.start.y * 144 - 144 / 2;
         this.role.scaleX = 1.2;
@@ -124,6 +122,7 @@ var CodeGame = (function (_super) {
             this.btn_temp.y = event.stageY - this._distance.y;
             this.hit_result = this.btn_temp.isHit(this.sc_code_panel);
             console.log("hit_result:" + this.hit_result);
+            //按钮与按钮间的插入线判断
             if (typeof (this._btnIntersectId) != "undefined" && this._btnIntersectId != null) {
                 this.btn_array[this._btnIntersectId].line.visible = false;
             }
@@ -184,7 +183,24 @@ var CodeGame = (function (_super) {
         this.role.x = this.leveldata.start.x * 144 - 144 / 2;
         this.role.y = this.leveldata.start.y * 144 - 144 / 2;
         this.actionFlag = 0;
-        this.startToRun(this.btn_array);
+        var runData = this.prepareRunDdata(this.btn_array);
+        this.startToRun(runData);
+    };
+    CodeGame.prototype.prepareRunDdata = function (btn_arr) {
+        var runData = new Array();
+        btn_arr.forEach(function (val, idx, array) {
+            var data = val;
+            if (val.btnType == "move") {
+                for (var i = 0; i < data.moveNumber; i++) {
+                    runData.push(data);
+                }
+            }
+            else {
+                runData.push(data);
+            }
+        });
+        console.log("runData length:" + runData.length);
+        return runData;
     };
     CodeGame.prototype.startToRun = function (btn_arr) {
         var button_array = btn_arr.concat();
@@ -197,11 +213,11 @@ var CodeGame = (function (_super) {
             var isHitBarrier = false;
             switch (btn.btnType) {
                 case "move":
-                    point = this.calPoint(btn.moveNumber);
+                    point = this.calPoint(1);
                     isHitBarrier = this.checkHitBarrier(point, this.barrier);
                     console.log("isHitBarrier:" + isHitBarrier);
                     if (isHitBarrier == false)
-                        this.roleMCStartPlay(btn.moveNumber);
+                        this.roleMCStartPlay(1);
                     break;
                 case "rotate":
                     this.playRotation(btn.direction);
@@ -226,7 +242,7 @@ var CodeGame = (function (_super) {
             else {
                 var funcChange = function () {
                 };
-                egret.Tween.get(this.role, { onChange: funcChange }).to({ x: point.x, y: point.y }, btn.moveNumber * 1000).call(this.startToRun, this, [button_array]);
+                egret.Tween.get(this.role, { onChange: funcChange }).to({ x: point.x, y: point.y }, 1 * 1000).call(this.startToRun, this, [button_array]);
             }
         }
         else {
