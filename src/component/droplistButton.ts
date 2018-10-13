@@ -32,15 +32,21 @@ class droplistButton extends eui.Component implements  eui.UIComponent {
 	{
 		//列表
         var list =new eui.List();
-        list.dataProvider = new eui.ArrayCollection(["1","2","3","4","5"]);//设计列表的index数以及每一项的内容
+        list.dataProvider = new eui.ArrayCollection(["1","3","2","4","5"]);//设计列表的index数以及每一项的内容
         list.x = 0;
         list.y=50;
 		list.width=150;
         list.selectedIndex=0;
 		this.list=list;
 
-		
 		//划线
+		this.initLine();
+
+	}
+
+	protected initLine()
+	{
+		
 		this.line = new egret.Shape();
 		this.line.graphics.lineStyle(5, 0xff00ff); 
 		this.line.graphics.moveTo( this.width,0 );

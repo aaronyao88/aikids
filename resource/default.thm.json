@@ -1,7 +1,9 @@
 {
 	"autoGenerateExmlsList": true,
 	"exmls": [
+		"resource/component/Barrier.exml",
 		"resource/component/droplistButton.exml",
+		"resource/component/pushDroplistButton.exml",
 		"resource/component/rotationDroplistButton.exml",
 		"resource/eui_skins/ButtonSkin.exml",
 		"resource/eui_skins/CheckBoxSkin.exml",
@@ -40,6 +42,7 @@
 		"Rotate": "resource/game/Rotate.exml",
 		"rotationDroplistButton": "resource/component/rotationDroplistButton.exml",
 		"droplistButton": "resource/component/droplistButton.exml",
-		"eui.ItemRenderer": "resource/eui_skins/ItemRendererSkin.exml"
+		"eui.ItemRenderer": "resource/eui_skins/ItemRendererSkin.exml",
+		"pushDroplistButton": "resource/component/pushDroplistButton.exml"
 	}
 }

@@ -26,13 +26,7 @@ var rotationDroplistButton = (function (_super) {
         list.selectedIndex = 0;
         this.list = list;
         //划线
-        this.line = new egret.Shape();
-        this.line.graphics.lineStyle(5, 0xff00ff);
-        this.line.graphics.moveTo(this.width, 0);
-        this.line.graphics.lineTo(this.width, this.height);
-        this.line.graphics.endFill();
-        this.addChild(this.line);
-        this.line.visible = false;
+        this.initLine();
     };
     rotationDroplistButton.prototype.onChange = function (evt) {
         this.selectNumberBtn.label = this.list.selectedItem;
@@ -43,4 +37,5 @@ var rotationDroplistButton = (function (_super) {
     return rotationDroplistButton;
 }(droplistButton));
 __reflect(rotationDroplistButton.prototype, "rotationDroplistButton");
+window["rotationDroplistButton"] = rotationDroplistButton;
 //# sourceMappingURL=rotationDroplistButton.js.map

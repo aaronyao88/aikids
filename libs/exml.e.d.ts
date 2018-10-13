@@ -1,4 +1,8 @@
+declare class BarrierSkin extends eui.Skin{
+}
 declare class droplistButtonSkin extends eui.Skin{
+}
+declare class pushDroplistButtonSkin extends eui.Skin{
 }
 declare class rotationDroplistButtonSkin extends eui.Skin{
 }

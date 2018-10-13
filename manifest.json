@@ -15,7 +15,9 @@
 		"bin-debug/Data/Element/BaseElement.js",
 		"bin-debug/Game/MoveForward.js",
 		"bin-debug/ThemeAdapter.js",
+		"bin-debug/component/Barrier.js",
 		"bin-debug/AssetAdapter.js",
+		"bin-debug/component/pushDroplistButton.js",
 		"bin-debug/component/rotationDroplistButton.js",
 		"bin-debug/Data/GameData.js",
 		"bin-debug/Data/LevelGameDataParse.js",
@@ -24,8 +26,8 @@
 		"bin-debug/Data/MapControl.js",
 		"bin-debug/Data/MapDataParse.js",
 		"bin-debug/Main.js",
-		"bin-debug/Data/Element/GameElement.js",
 		"bin-debug/LoadingUI.js",
+		"bin-debug/Data/Element/LevelRequireElement.js",
 		"bin-debug/Game/AnswerWord.js",
 		"bin-debug/Game/CodeGame.js",
 		"bin-debug/Game/GameSetting.js",
@@ -39,6 +41,6 @@
 		"bin-debug/Game/SceneLevel.js",
 		"bin-debug/Game/SoundManager.js",
 		"bin-debug/Game/test.js",
-		"bin-debug/Data/Element/LevelRequireElement.js"
+		"bin-debug/Data/Element/GameElement.js"
 	]
 }

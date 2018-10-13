@@ -19,6 +19,7 @@ var CodeGame = (function (_super) {
         _this._distance = new egret.Point(); //鼠标点击时，鼠标与按钮的位置差
         _this._original = new egret.Point(); // btn原始位置
         _this.btn_id = 0; //创建按钮的ID
+        _this.barrier_id = 0; // 障碍ID
         console.log("CodeGame constructor");
         return _this;
     }
@@ -42,46 +43,20 @@ var CodeGame = (function (_super) {
         var txtr = RES.getRes("renwu_png");
         var mcFactory = new egret.MovieClipDataFactory(data, txtr);
         this.role = new egret.MovieClip(mcFactory.generateMovieClipData("walk"));
-        this.gp_map.addChild(this.role);
         //监听各个按钮事件
         this.obj_move.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBeginMove, this);
         this.obj_move.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
         this.obj_rotation.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBeginMove, this);
         this.obj_rotation.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
+        this.obj_push.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBeginMove, this);
+        this.obj_push.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
         this.btn_run.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_run, this);
         this.btn_return.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_return, this);
         this.btn_nextlevel.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_nextlevel, this);
     };
     //初始化关卡
     CodeGame.prototype.InitLevel = function (level) {
-        var _this = this;
-        //初始化数据
-        this.actionFlag = 0;
-        this.levelIndex = level;
-        this.gp_win.visible = false;
-        this.bone.visible = true;
-        this.leveldata = LevelDataManagement.getInstance().GetLevel(level);
-        //初始化主角的位置
-        console.log("leveldata:");
-        console.log(this.leveldata);
-        this.role.anchorOffsetX = this.role.width / 2;
-        this.role.anchorOffsetY = this.role.height / 2;
-        this.role.x = this.leveldata.start.x * 144 - 144 / 1.5;
-        this.role.y = this.leveldata.start.y * 144 - 144 / 2;
-        this.role.scaleX = 1.2;
-        this.role.scaleY = 1.2;
-        this.role.gotoAndStop("right");
-        //初始化骨头的位置
-        this.bone.anchorOffsetX = this.bone.width / 2;
-        this.bone.anchorOffsetY = this.bone.height / 2;
-        this.bone.x = this.leveldata.end.x * 144 - 144 / 2;
-        this.bone.y = this.leveldata.end.y * 144 - 144 / 2;
-        //初始化障碍
-        this.barrier.push(this.createBarrier(3, 1));
-        this.barrier.push(this.createBarrier(5, 4));
-        this.barrier.forEach(function (element) {
-            _this.gp_map.addChild(element);
-        });
+        this.initMap(level);
         //清空代码执行区
         if (this.btn_array.length > 0) {
             for (var i = 0; i < this.btn_array.length; i++) {
@@ -89,6 +64,39 @@ var CodeGame = (function (_super) {
             }
             this.btn_array = new Array();
         }
+    };
+    CodeGame.prototype.initMap = function (level) {
+        var _this = this;
+        this.gp_object_layer.removeChildren();
+        //初始化数据
+        this.actionFlag = 0;
+        this.levelIndex = level;
+        this.gp_win.visible = false;
+        this.bone.visible = true;
+        this.leveldata = LevelDataManagement.getInstance().GetLevel(level);
+        //初始化障碍
+        this.barrier = [];
+        this.barrier.push(this.createBarrier(3, 1, "wall", this.barrier_id++));
+        this.barrier.push(this.createBarrier(5, 4, "wall", this.barrier_id++));
+        this.barrier.push(this.createBarrier(2, 3, "hole", this.barrier_id++));
+        this.barrier.push(this.createBarrier(2, 2, "box", this.barrier_id++));
+        this.barrier.forEach(function (element) {
+            _this.gp_object_layer.addChild(element);
+        });
+        //初始化骨头的位置
+        this.bone.anchorOffsetX = this.bone.width / 2;
+        this.bone.anchorOffsetY = this.bone.height / 2;
+        this.bone.x = this.leveldata.end.x * 144 - 144 / 2;
+        this.bone.y = this.leveldata.end.y * 144 - 144 / 2;
+        //初始化主角的位置
+        this.role.anchorOffsetX = this.role.width / 2;
+        this.role.anchorOffsetY = this.role.height / 2;
+        this.role.x = this.leveldata.start.x * 144 - 144 / 1.5;
+        this.role.y = this.leveldata.start.y * 144 - 144 / 2;
+        this.role.scaleX = 1.2;
+        this.role.scaleY = 1.2;
+        this.gp_object_layer.addChild(this.role);
+        this.role.gotoAndStop("right");
     };
     // private touch_reset(event: egret.TouchEvent) {
     // 	this.InitLevel(this.levelIndex);
@@ -100,8 +108,11 @@ var CodeGame = (function (_super) {
         if (event.currentTarget.btnType == 'move') {
             this.btn_temp = new droplistButton();
         }
-        else {
+        else if (event.currentTarget.btnType == 'rotate') {
             this.btn_temp = new rotationDroplistButton();
+        }
+        else {
+            this.btn_temp = new pushDroplistButton();
         }
         this.btn_temp.btnID = this.btn_id;
         this.btn_id++;
@@ -179,10 +190,9 @@ var CodeGame = (function (_super) {
     };
     CodeGame.prototype.touch_run = function () {
         SoundManager.getInstance().playClick();
-        // 主角归位
-        this.role.x = this.leveldata.start.x * 144 - 144 / 2;
-        this.role.y = this.leveldata.start.y * 144 - 144 / 2;
-        this.actionFlag = 0;
+        this.btn_run.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_run, this);
+        // 初始化地图
+        this.initMap(this.levelIndex);
         var runData = this.prepareRunDdata(this.btn_array);
         this.startToRun(runData);
     };
@@ -234,6 +244,25 @@ var CodeGame = (function (_super) {
                         this.actionFlag = 3;
                     }
                     break;
+                case "push":
+                    point = this.calPoint(1);
+                    var hitBox = this.checkIsBox(point, this.barrier);
+                    if (hitBox) {
+                        //推箱子
+                        var boxPoint = this.calBoxPoint(hitBox);
+                        this.roleMCStartPlay(1);
+                        egret.Tween.get(hitBox, {}).to({ x: boxPoint.x, y: boxPoint.y }, 1 * 1000);
+                        var isInHole = this.checkBoxInHole(boxPoint);
+                        if (isInHole) {
+                            this.removeHitBox(hitBox);
+                        }
+                    }
+                    else {
+                        //lose
+                        isHitBarrier = true;
+                        console.log("no hit box");
+                    }
+                    break;
             }
             if (isHitBarrier) {
                 this.showLose();
@@ -251,19 +280,92 @@ var CodeGame = (function (_super) {
         }
         console.log("startToRunEnd");
     };
-    CodeGame.prototype.checkHitBarrier = function (point, barrier) {
-        var hitResult = false;
+    CodeGame.prototype.removeHitBox = function (box) {
+        var _this = this;
+        this.barrier.forEach(function (element, idx, array) {
+            if (element.barrier_id == box.barrier_id) {
+                console.log("remove type:" + element.type);
+                _this.barrier.splice(idx, 1);
+            }
+        });
+    };
+    CodeGame.prototype.afterBoxMove = function (point) {
+        console.log("afterBoxMove play sound, run animation");
+        this.barrier.forEach(function (element) {
+            console.log("element type:" + element.type + " this barrier.x:" + element.x + " y:" + element.y);
+        });
+    };
+    //检查箱子是否调入洞中，并将箱子移除
+    CodeGame.prototype.checkBoxInHole = function (point) {
+        var _this = this;
+        var isHit = false;
+        console.log("box.x:" + point.x + " box.y:" + point.y);
+        this.barrier.forEach(function (element, idx, array) {
+            console.log("checkBoxInHole element type:" + element.type + " this barrier.x:" + element.x + " y:" + element.y);
+            if (element.hitTestPoint(point.x + 1, point.y + 1)) {
+                console.log("remove type:" + element.type);
+                //将box和element都从barrier中移除
+                delete _this.barrier[idx];
+                isHit = true;
+            }
+        });
+        console.log(this.barrier);
+        return isHit;
+    };
+    CodeGame.prototype.checkIsBox = function (point, barrier) {
+        var hitResult = null;
         barrier.some(function (element) {
-            if (element.hitTestPoint(point.x, point.y)) {
-                hitResult = true;
+            if (element.hitTestPoint(point.x, point.y) && element.type == "box") {
+                hitResult = element;
                 return true;
             }
             return false;
         });
         return hitResult;
     };
+    CodeGame.prototype.checkHitBarrier = function (point, barrier) {
+        var hitResult = false;
+        barrier.some(function (element) {
+            if (element != undefined) {
+                if (element.hitTestPoint(point.x, point.y)) {
+                    hitResult = true;
+                    return true;
+                }
+            }
+            return false;
+        });
+        return hitResult;
+    };
+    CodeGame.prototype.calBoxPoint = function (box) {
+        var point = new egret.Point(box.x, box.y);
+        var orientation = this.actionFlag;
+        switch (orientation) {
+            case 0:
+                if ((box.x + 144) < 720) {
+                    point.x = box.x + 144;
+                }
+                break;
+            case 1:
+                if ((box.y + 144) < 864) {
+                    point.y = box.y + 144;
+                }
+                break;
+            case 2:
+                if ((box.x - 144) > 0) {
+                    point.x = box.x - 144;
+                }
+                break;
+            case 3:
+                if ((box.y - 144) > 0) {
+                    point.y = box.y - 144;
+                }
+                break;
+            default:
+                console.log("error");
+        }
+        return point;
+    };
     CodeGame.prototype.playRotation = function (direction) {
-        SoundManager.getInstance().playRotationSound();
         var orientation = this.actionFlag;
         switch (orientation) {
             case 0:
@@ -301,6 +403,7 @@ var CodeGame = (function (_super) {
             default:
                 console.log("playRotation error");
         }
+        SoundManager.getInstance().playRotationSound();
     };
     CodeGame.prototype.roleMCStartPlay = function (num) {
         var orientation = this.actionFlag;
@@ -423,32 +526,16 @@ var CodeGame = (function (_super) {
         this.bone.visible = false;
         this.gp_win.visible = true;
         SoundManager.getInstance().playRight();
+        this.btn_run.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_run, this);
         //解锁下一关
         SceneLevel.getInstance().OpenLevel(this.levelIndex + 1);
     };
     CodeGame.prototype.showLose = function () {
         console.log("lose");
+        this.btn_run.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_run, this);
         SoundManager.getInstance().playWrong();
     };
-    // private moveToX(direction: string, num: number) {
-    // 	if (num > 0) {
-    // 		if (direction == "right") {
-    // 			if ((this.role.x + 144) > 720) {
-    // 				console.log("reach the right end");
-    // 			} else {
-    // 				egret.Tween.get(this.role).to({ x: this.role.x + 144 }, 600, egret.Ease.sineIn).call(this.moveToX, this, ["right", num - 1]).wait(300);
-    // 				console.log(this.role.x);
-    // 			}
-    // 		} else {
-    // 			if ((this.role.x - 144) < 0) {
-    // 				console.log("reach the left end");
-    // 			} else {
-    // 				egret.Tween.get(this.role).to({ x: this.role.x - 144 }, 600, egret.Ease.sineIn).call(this.moveToX, this, ["right", num - 1]).wait(300);
-    // 				console.log(this.role.x);
-    // 			}
-    // 		}
-    // 	}
-    // }
+    //egret.Tween.get(this.role).to({ x: this.role.x - 144 }, 600, egret.Ease.sineIn).call(this.moveToX, this, ["right", num - 1]).wait(300);
     //进入下一关
     CodeGame.prototype.touch_nextlevel = function () {
         SoundManager.getInstance().playClick();
@@ -460,14 +547,10 @@ var CodeGame = (function (_super) {
         this.parent.addChild(SceneLevel.getInstance());
         this.parent.removeChild(this);
     };
-    CodeGame.prototype.createBarrier = function (x, y) {
-        var barrier = new egret.Shape();
-        //barrier.graphics.lineStyle(5, 0xff00ff); 
-        var barrierX = (x - 1) * 144;
-        var barrierY = (y - 1) * 144;
-        barrier.graphics.beginFill(0xff00ff, 1);
-        barrier.graphics.drawRect(barrierX, barrierY, 144, 144);
-        barrier.graphics.endFill();
+    CodeGame.prototype.createBarrier = function (x, y, type, id) {
+        var barrier = new Barrier(type, id);
+        barrier.x = (x - 1) * 144;
+        barrier.y = (y - 1) * 144;
         return barrier;
     };
     return CodeGame;

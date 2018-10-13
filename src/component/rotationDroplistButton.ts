@@ -18,15 +18,8 @@ class rotationDroplistButton extends droplistButton {
         list.selectedIndex=0;
 		this.list=list;
 
-		
 		//划线
-		this.line = new egret.Shape();
-		this.line.graphics.lineStyle(5, 0xff00ff); 
-		this.line.graphics.moveTo( this.width,0 );
-        this.line.graphics.lineTo( this.width, this.height );
-        this.line.graphics.endFill();
-		this.addChild(this.line);
-		this.line.visible = false;
+		this.initLine();
 	}
 
 	protected onChange(evt:egret.Event)
@@ -37,3 +30,5 @@ class rotationDroplistButton extends droplistButton {
 		this.removeChild(this.list);
 	}
 }
+
+window["rotationDroplistButton"] = rotationDroplistButton;
