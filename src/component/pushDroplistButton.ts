@@ -1,8 +1,8 @@
 class pushDroplistButton extends droplistButton {
 	public btnType:string = "push";
 	
-	public constructor() {
-		super();
+	public constructor(roleArray?) {
+		super(roleArray);
 		this.skinName = "resource/component/pushDroplistButton.exml";
 	}
 
@@ -18,9 +18,5 @@ class pushDroplistButton extends droplistButton {
 		this.init();
 	}
 
-	protected init(){
-		//划线
-		this.initLine();
-	}
 	
 }

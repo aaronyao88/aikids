@@ -55,7 +55,7 @@
     "parentPath": ""
   },
   "global": {
-    "globalAutoLayerMarkEnable": true
+    "globalAutoLayerMarkEnable": false
   },
   "1664edf489f": {
     "path": "component/rotationDroplistButton.ts",

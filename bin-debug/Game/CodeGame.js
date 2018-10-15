@@ -12,6 +12,7 @@ var CodeGame = (function (_super) {
     __extends(CodeGame, _super);
     function CodeGame() {
         var _this = _super.call(this) || this;
+        _this.roles = new Array(); //人物集合
         _this.btn_array = new Array(); //在运行区的按钮
         _this.barrier = []; //障碍物
         //数据变量
@@ -20,6 +21,7 @@ var CodeGame = (function (_super) {
         _this._original = new egret.Point(); // btn原始位置
         _this.btn_id = 0; //创建按钮的ID
         _this.barrier_id = 0; // 障碍ID
+        _this.roleArray = []; //角色名称列表
         console.log("CodeGame constructor");
         return _this;
     }
@@ -38,11 +40,6 @@ var CodeGame = (function (_super) {
     };
     CodeGame.prototype.init = function () {
         SoundManager.getInstance();
-        // 准备mc数据
-        var data = RES.getRes("renwu_json");
-        var txtr = RES.getRes("renwu_png");
-        var mcFactory = new egret.MovieClipDataFactory(data, txtr);
-        this.role = new egret.MovieClip(mcFactory.generateMovieClipData("walk"));
         //监听各个按钮事件
         this.obj_move.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBeginMove, this);
         this.obj_move.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
@@ -89,30 +86,28 @@ var CodeGame = (function (_super) {
         this.bone.x = this.leveldata.end.x * 144 - 144 / 2;
         this.bone.y = this.leveldata.end.y * 144 - 144 / 2;
         //初始化主角的位置
-        this.role.anchorOffsetX = this.role.width / 2;
-        this.role.anchorOffsetY = this.role.height / 2;
-        this.role.x = this.leveldata.start.x * 144 - 144 / 1.5;
-        this.role.y = this.leveldata.start.y * 144 - 144 / 2;
-        this.role.scaleX = 1.2;
-        this.role.scaleY = 1.2;
-        this.gp_object_layer.addChild(this.role);
-        this.role.gotoAndStop("right");
+        this.leveldata.role_list.forEach(function (element) {
+            var role = new Role(element.name, element.type, element.x, element.y);
+            _this.gp_object_layer.addChild(role.displayObject);
+            _this.roles[role.type] = role;
+            if (role.type == "lead") {
+                _this.role = role.displayObject;
+            }
+            _this.roleArray.push(element.name);
+        });
     };
-    // private touch_reset(event: egret.TouchEvent) {
-    // 	this.InitLevel(this.levelIndex);
-    // }
     CodeGame.prototype.touchBeginMove = function (event) {
         SoundManager.getInstance().playClick();
         var target = event.currentTarget;
         //创建可移动按钮
         if (event.currentTarget.btnType == 'move') {
-            this.btn_temp = new droplistButton();
+            this.btn_temp = new droplistButton(this.roleArray);
         }
         else if (event.currentTarget.btnType == 'rotate') {
-            this.btn_temp = new rotationDroplistButton();
+            this.btn_temp = new rotationDroplistButton(this.roleArray);
         }
         else {
-            this.btn_temp = new pushDroplistButton();
+            this.btn_temp = new pushDroplistButton(this.roleArray);
         }
         this.btn_temp.btnID = this.btn_id;
         this.btn_id++;
@@ -158,35 +153,37 @@ var CodeGame = (function (_super) {
         SoundManager.getInstance().playClick();
         this._touchStatus = false;
         this.gp_control.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.touchMove, this);
-        this.btn_temp.removeEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
-        if (this.hit_result) {
-            //如果在两个按钮中间
-            if (typeof (this._btnIntersectId) != "undefined" && this._btnIntersectId != null) {
-                console.log("插入：" + this._btnIntersectId + 1);
-                this.btn_array[this._btnIntersectId].line.visible = false;
-                //按钮数组插入在两个按钮中间
-                this.btn_temp.setEdit(true);
-                this.btn_array.splice(this._btnIntersectId + 1, 0, this.btn_temp);
+        if (this.btn_temp) {
+            this.btn_temp.removeEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
+            if (this.hit_result) {
+                //如果在两个按钮中间
+                if (typeof (this._btnIntersectId) != "undefined" && this._btnIntersectId != null) {
+                    console.log("插入：" + this._btnIntersectId + 1);
+                    this.btn_array[this._btnIntersectId].line.visible = false;
+                    //按钮数组插入在两个按钮中间
+                    this.btn_temp.setEdit(true);
+                    this.btn_array.splice(this._btnIntersectId + 1, 0, this.btn_temp);
+                }
+                else {
+                    //否则插入在最后
+                    this.btn_temp.setEdit(true);
+                    this.btn_array.push(this.btn_temp);
+                }
+                this.btn_temp.y = 122;
+                //更新布局
+                for (var i = 0; i < this.btn_array.length; i++) {
+                    this.btn_array[i].x = i * this.btn_array[i].width;
+                }
+                this.btn_temp.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchCodeBeginMove, this);
+                this.btn_temp.addEventListener(egret.TouchEvent.TOUCH_END, this.touchCodeEndMove, this);
             }
             else {
-                //否则插入在最后
-                this.btn_temp.setEdit(true);
-                this.btn_array.push(this.btn_temp);
+                this.gp_control.removeChild(this.btn_temp);
             }
-            this.btn_temp.y = 122;
-            //更新布局
-            for (var i = 0; i < this.btn_array.length; i++) {
-                this.btn_array[i].x = i * this.btn_array[i].width;
-            }
-            this.btn_temp.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchCodeBeginMove, this);
-            this.btn_temp.addEventListener(egret.TouchEvent.TOUCH_END, this.touchCodeEndMove, this);
+            this.btn_temp = null;
+            this.hit_result = false;
+            this._btnIntersectId = null;
         }
-        else {
-            this.gp_control.removeChild(this.btn_temp);
-        }
-        this.btn_temp = null;
-        this.hit_result = false;
-        this._btnIntersectId = null;
     };
     CodeGame.prototype.touch_run = function () {
         SoundManager.getInstance().playClick();
@@ -200,7 +197,7 @@ var CodeGame = (function (_super) {
         var runData = new Array();
         btn_arr.forEach(function (val, idx, array) {
             var data = val;
-            if (val.btnType == "move") {
+            if (val.btnType == "move" || val.btnType == "push") {
                 for (var i = 0; i < data.moveNumber; i++) {
                     runData.push(data);
                 }

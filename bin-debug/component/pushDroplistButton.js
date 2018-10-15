@@ -10,8 +10,8 @@ r.prototype = e.prototype, t.prototype = new r();
 };
 var pushDroplistButton = (function (_super) {
     __extends(pushDroplistButton, _super);
-    function pushDroplistButton() {
-        var _this = _super.call(this) || this;
+    function pushDroplistButton(roleArray) {
+        var _this = _super.call(this, roleArray) || this;
         _this.btnType = "push";
         _this.skinName = "resource/component/pushDroplistButton.exml";
         return _this;
@@ -22,10 +22,6 @@ var pushDroplistButton = (function (_super) {
     pushDroplistButton.prototype.childrenCreated = function () {
         _super.prototype.childrenCreated.call(this);
         this.init();
-    };
-    pushDroplistButton.prototype.init = function () {
-        //划线
-        this.initLine();
     };
     return pushDroplistButton;
 }(droplistButton));

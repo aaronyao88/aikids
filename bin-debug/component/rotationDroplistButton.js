@@ -10,29 +10,23 @@ r.prototype = e.prototype, t.prototype = new r();
 };
 var rotationDroplistButton = (function (_super) {
     __extends(rotationDroplistButton, _super);
-    function rotationDroplistButton() {
-        var _this = _super.call(this) || this;
+    function rotationDroplistButton(roleArray) {
+        var _this = _super.call(this, roleArray) || this;
         _this.btnType = "rotate";
         _this.skinName = "resource/component/rotationDroplistButton.exml";
         return _this;
     }
     rotationDroplistButton.prototype.init = function () {
+        _super.prototype.init.call(this);
         //列表
-        var list = new eui.List();
-        list.dataProvider = new eui.ArrayCollection(["左", "右"]); //设计列表的index数以及每一项的内容
-        list.x = 0;
-        list.y = 50;
-        list.width = 150;
-        list.selectedIndex = 0;
-        this.list = list;
-        //划线
-        this.initLine();
+        var moveArray = ["左", "右"];
+        this.moveList = this.createList(moveArray);
     };
-    rotationDroplistButton.prototype.onChange = function (evt) {
-        this.selectNumberBtn.label = this.list.selectedItem;
-        this.direction = this.list.selectedItem;
+    rotationDroplistButton.prototype.moveListOnChange = function (evt) {
+        this.selectNumberBtn.label = this.moveList.selectedItem;
+        this.direction = this.moveList.selectedItem;
         this.isOnStage = false;
-        this.removeChild(this.list);
+        this.removeChild(this.moveList);
     };
     return rotationDroplistButton;
 }(droplistButton));

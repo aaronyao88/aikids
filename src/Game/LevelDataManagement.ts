@@ -1,10 +1,11 @@
 class LevelDataValue {
 	public start: egret.Point;
+	public start2:egret.Point;
+	public start3:egret.Point;
 	public end: egret.Point;
 	public tip: string[];
 	public btn_type: MoveForward[];
-
-
+	public role_list:Role[];
 }
 
 

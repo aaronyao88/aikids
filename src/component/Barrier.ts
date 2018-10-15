@@ -2,7 +2,7 @@ class Barrier extends eui.Component implements  eui.UIComponent {
 	public type:string="wall";
 	public rect:eui.Rect;
 	public txt:eui.Label;
-	public barrier_id;
+	public barrier_id:number;
 
 
 

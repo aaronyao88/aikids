@@ -3,7 +3,11 @@
 	"start":{"x":1,"y":1},
 	"end": {"x":5,"y":5},
 	"tip": [{"name":"yao","say":"11111"},{"name":"huan","say":"22222"}],
-	"btn_type": ["moveforward","rotate"]
+	"btn_type": ["moveforward","rotate"],
+	"role_list":[
+		{"name":"佩奇","type":"lead", "x":1,"y":2},
+		{"name":"乔治","type":"costar","x":3,"y":3}
+	]
 }, 
 {
 	"start":{"x":1,"y":5},

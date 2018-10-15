@@ -4,6 +4,7 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 	//UI
 	private role: egret.MovieClip;  //主角
 	private bone: eui.Image;        // 目标物
+	private roles:Array<Role> = new Array<Role>();     //人物集合
 	//代码按钮
 	private obj_move: droplistButton;       //移动按钮
 	private obj_rotation: rotationDroplistButton; //旋转按钮
@@ -30,8 +31,9 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 	private hit_result: boolean; //判断按钮是否在框内
 	private leveldata: LevelDataValue;    //本关数据
 	private btn_id: number = 0;     //创建按钮的ID
-	private barrier_id:number=0;    // 障碍ID
+	private barrier_id: number = 0;    // 障碍ID
 	private levelIndex: number;  //关卡ID
+	private roleArray = [];   //角色名称列表
 
 
 	public static getInstance() {
@@ -61,12 +63,6 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 	protected init(): void {
 		SoundManager.getInstance();
 
-		// 准备mc数据
-		var data = RES.getRes("renwu_json");
-		var txtr = RES.getRes("renwu_png");
-		var mcFactory: egret.MovieClipDataFactory = new egret.MovieClipDataFactory(data, txtr);
-		this.role = new egret.MovieClip(mcFactory.generateMovieClipData("walk"));
-
 		//监听各个按钮事件
 		this.obj_move.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBeginMove, this);
 		this.obj_move.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
@@ -95,8 +91,7 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 
 	}
 
-	private initMap(level: number)
-	{
+	private initMap(level: number) {
 		this.gp_object_layer.removeChildren();
 		//初始化数据
 		this.actionFlag = 0;
@@ -106,11 +101,11 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 		this.leveldata = LevelDataManagement.getInstance().GetLevel(level);
 
 		//初始化障碍
-		this.barrier=[];
-		this.barrier.push(this.createBarrier(3, 1,"wall",this.barrier_id++));
-		this.barrier.push(this.createBarrier(5, 4,"wall",this.barrier_id++));
-		this.barrier.push(this.createBarrier(2, 3,"hole",this.barrier_id++));
-		this.barrier.push(this.createBarrier(2, 2,"box",this.barrier_id++));
+		this.barrier = [];
+		this.barrier.push(this.createBarrier(3, 1, "wall", this.barrier_id++));
+		this.barrier.push(this.createBarrier(5, 4, "wall", this.barrier_id++));
+		this.barrier.push(this.createBarrier(2, 3, "hole", this.barrier_id++));
+		this.barrier.push(this.createBarrier(2, 2, "box", this.barrier_id++));
 		this.barrier.forEach(element => {
 			this.gp_object_layer.addChild(element);
 		});
@@ -120,33 +115,30 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 		this.bone.x = this.leveldata.end.x * 144 - 144 / 2;
 		this.bone.y = this.leveldata.end.y * 144 - 144 / 2;
 		//初始化主角的位置
-		this.role.anchorOffsetX = this.role.width / 2;
-		this.role.anchorOffsetY = this.role.height / 2;
-		this.role.x = this.leveldata.start.x * 144 - 144 / 1.5;
-		this.role.y = this.leveldata.start.y * 144 - 144 / 2;
-		this.role.scaleX = 1.2;
-		this.role.scaleY = 1.2;
-		this.gp_object_layer.addChild(this.role);
-		this.role.gotoAndStop("right");
+		this.leveldata.role_list.forEach(element => {
+			var role = new Role(element.name,element.type,element.x,element.y);
+			this.gp_object_layer.addChild(role.displayObject);
+			this.roles[role.type]=role;
+			if(role.type=="lead")
+			{
+				this.role=role.displayObject;
+			}
+			this.roleArray.push(element.name);
+		});
+		
 	}
 
-
-
-	// private touch_reset(event: egret.TouchEvent) {
-	// 	this.InitLevel(this.levelIndex);
-	// }
 
 	private touchBeginMove(event: egret.TouchEvent) {
 		SoundManager.getInstance().playClick();
 		var target = event.currentTarget;
 		//创建可移动按钮
 		if (event.currentTarget.btnType == 'move') {
-			this.btn_temp = new droplistButton();
-		} else if(event.currentTarget.btnType == 'rotate') {
-			this.btn_temp = new rotationDroplistButton();
-		}else
-		{
-			this.btn_temp = new pushDroplistButton();
+			this.btn_temp = new droplistButton(this.roleArray);
+		} else if (event.currentTarget.btnType == 'rotate') {
+			this.btn_temp = new rotationDroplistButton(this.roleArray);
+		} else {
+			this.btn_temp = new pushDroplistButton(this.roleArray);
 		}
 		this.btn_temp.btnID = this.btn_id;
 		this.btn_id++;
@@ -205,66 +197,68 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 		SoundManager.getInstance().playClick();
 		this._touchStatus = false;
 		this.gp_control.removeEventListener(egret.TouchEvent.TOUCH_MOVE, this.touchMove, this);
-		this.btn_temp.removeEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
+		if (this.btn_temp) {
+			this.btn_temp.removeEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
 
-		if (this.hit_result) {
 
-			//如果在两个按钮中间
-			if (typeof (this._btnIntersectId) != "undefined" && this._btnIntersectId != null) {
-				console.log("插入：" + this._btnIntersectId + 1);
-				this.btn_array[this._btnIntersectId].line.visible = false;
-				//按钮数组插入在两个按钮中间
-				this.btn_temp.setEdit(true);
-				this.btn_array.splice(this._btnIntersectId + 1, 0, this.btn_temp);
 
+			if (this.hit_result) {
+
+				//如果在两个按钮中间
+				if (typeof (this._btnIntersectId) != "undefined" && this._btnIntersectId != null) {
+					console.log("插入：" + this._btnIntersectId + 1);
+					this.btn_array[this._btnIntersectId].line.visible = false;
+					//按钮数组插入在两个按钮中间
+					this.btn_temp.setEdit(true);
+					this.btn_array.splice(this._btnIntersectId + 1, 0, this.btn_temp);
+
+				} else {
+					//否则插入在最后
+					this.btn_temp.setEdit(true);
+					this.btn_array.push(this.btn_temp);
+				}
+				this.btn_temp.y = 122;
+				//更新布局
+				for (var i = 0; i < this.btn_array.length; i++) {
+					this.btn_array[i].x = i * this.btn_array[i].width;
+				}
+
+				this.btn_temp.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchCodeBeginMove, this);
+				this.btn_temp.addEventListener(egret.TouchEvent.TOUCH_END, this.touchCodeEndMove, this);
 			} else {
-				//否则插入在最后
-				this.btn_temp.setEdit(true);
-				this.btn_array.push(this.btn_temp);
+				this.gp_control.removeChild(this.btn_temp);
 			}
-			this.btn_temp.y = 122;
-			//更新布局
-			for (var i = 0; i < this.btn_array.length; i++) {
-				this.btn_array[i].x = i * this.btn_array[i].width;
-			}
-
-			this.btn_temp.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchCodeBeginMove, this);
-			this.btn_temp.addEventListener(egret.TouchEvent.TOUCH_END, this.touchCodeEndMove, this);
-		} else {
-			this.gp_control.removeChild(this.btn_temp);
+			this.btn_temp = null;
+			this.hit_result = false;
+			this._btnIntersectId = null;
 		}
-		this.btn_temp = null;
-		this.hit_result = false;
-		this._btnIntersectId = null;
 
 	}
 
 	private touch_run() {
 		SoundManager.getInstance().playClick();
-	    this.btn_run.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_run, this);
+		this.btn_run.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_run, this);
 		// 初始化地图
 		this.initMap(this.levelIndex);
 		var runData: Array<droplistButton> = this.prepareRunDdata(this.btn_array);
 		this.startToRun(runData);
-		
+
 
 	}
 
-	private prepareRunDdata(btn_arr: droplistButton[])
-	{
+	private prepareRunDdata(btn_arr: droplistButton[]) {
 		var runData: Array<droplistButton> = new Array<droplistButton>();
-		btn_arr.forEach( (val, idx, array) => {
-			var data:droplistButton = val;
-			if(val.btnType == "move"){
-				for(var i=0;i<data.moveNumber;i++)
-				{
+		btn_arr.forEach((val, idx, array) => {
+			var data: droplistButton = val;
+			if (val.btnType == "move" || val.btnType == "push") {
+				for (var i = 0; i < data.moveNumber; i++) {
 					runData.push(data);
 				}
-			}else{
+			} else {
 				runData.push(data)
-				
+
 			}
-			
+
 		});
 		console.log("runData length:" + runData.length);
 		return runData;
@@ -288,7 +282,7 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 					point = this.calPoint(1);
 					isHitBarrier = this.checkHitBarrier(point, this.barrier);
 					console.log("isHitBarrier:" + isHitBarrier);
-					if (isHitBarrier == false) 
+					if (isHitBarrier == false)
 						this.roleMCStartPlay(1);
 					break;
 				case "rotate":
@@ -307,21 +301,18 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 					break;
 				case "push":
 					point = this.calPoint(1);
-					var hitBox = this.checkIsBox(point,this.barrier);
-					if(hitBox)
-					{
+					var hitBox = this.checkIsBox(point, this.barrier);
+					if (hitBox) {
 						//推箱子
 						var boxPoint = this.calBoxPoint(hitBox);
 						this.roleMCStartPlay(1);
-						egret.Tween.get(hitBox, {}).to({ x: boxPoint.x, y: boxPoint.y }, 1 * 1000);	
+						egret.Tween.get(hitBox, {}).to({ x: boxPoint.x, y: boxPoint.y }, 1 * 1000);
 						var isInHole = this.checkBoxInHole(boxPoint);
-						if(isInHole)
-						{
+						if (isInHole) {
 							this.removeHitBox(hitBox);
 
 						}
-					}else
-					{
+					} else {
 						//lose
 						isHitBarrier = true;
 						console.log("no hit box");
@@ -347,59 +338,55 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 
 	}
 
-	private removeHitBox(box:Barrier)
-	{
+	private removeHitBox(box: Barrier) {
 		this.barrier.forEach((element, idx, array) => {
-			if(element.barrier_id==box.barrier_id)
-			{
-				console.log("remove type:"+element.type);
-				this.barrier.splice(idx,1);
+			if (element.barrier_id == box.barrier_id) {
+				console.log("remove type:" + element.type);
+				this.barrier.splice(idx, 1);
 			}
-			
-		});		
+
+		});
 	}
 
 
-	private afterBoxMove(point:egret.Point){
-		
+	private afterBoxMove(point: egret.Point) {
+
 		console.log("afterBoxMove play sound, run animation");
 
-		
-		
+
+
 		this.barrier.forEach(element => {
-			console.log("element type:"+element.type + " this barrier.x:"+element.x+ " y:"+element.y);
+			console.log("element type:" + element.type + " this barrier.x:" + element.x + " y:" + element.y);
 		});
 	}
 
 
 
 	//检查箱子是否调入洞中，并将箱子移除
-	private checkBoxInHole(point:egret.Point)
-	{
-		var isHit=false;
-		
-		console.log("box.x:"+point.x+" box.y:"+point.y);
+	private checkBoxInHole(point: egret.Point) {
+		var isHit = false;
+
+		console.log("box.x:" + point.x + " box.y:" + point.y);
 		this.barrier.forEach((element, idx, array) => {
-			console.log("checkBoxInHole element type:"+element.type + " this barrier.x:"+element.x+ " y:"+element.y);
-			if(element.hitTestPoint(point.x+1,point.y+1))
-			{
-				console.log("remove type:"+element.type);
+			console.log("checkBoxInHole element type:" + element.type + " this barrier.x:" + element.x + " y:" + element.y);
+			if (element.hitTestPoint(point.x + 1, point.y + 1)) {
+				console.log("remove type:" + element.type);
 				//将box和element都从barrier中移除
 				delete this.barrier[idx];
-				isHit=true;	
+				isHit = true;
 			}
-			
+
 		});
 		console.log(this.barrier);
 
 		return isHit;
-		
+
 	}
 
-	private checkIsBox (point: egret.Point, barrier) {
+	private checkIsBox(point: egret.Point, barrier) {
 		var hitResult = null
 		barrier.some(element => {
-			if (element.hitTestPoint(point.x, point.y) && element.type=="box") {
+			if (element.hitTestPoint(point.x, point.y) && element.type == "box") {
 				hitResult = element;
 				return true;
 			}
@@ -412,8 +399,7 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 	private checkHitBarrier(point: egret.Point, barrier) {
 		var hitResult = false
 		barrier.some(element => {
-			if(element != undefined)
-			{
+			if (element != undefined) {
 				if (element.hitTestPoint(point.x, point.y)) {
 					hitResult = true;
 					return true;
@@ -427,29 +413,28 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 
 	}
 
-	private calBoxPoint(box:Barrier)
-	{
+	private calBoxPoint(box: Barrier) {
 		var point = new egret.Point(box.x, box.y);
 		var orientation: number = this.actionFlag;
 		switch (orientation) {
 			case 0:
-				if ((box.x +  144) < 720) {
+				if ((box.x + 144) < 720) {
 					point.x = box.x + 144
 				}
 				break;
 			case 1:
-				if ((box.y +  144) < 864) {
-					point.y = box.y +  144
+				if ((box.y + 144) < 864) {
+					point.y = box.y + 144
 				}
 
 				break;
 			case 2:
-				if ((box.x -  144) > 0) {
-					point.x = box.x -  144
+				if ((box.x - 144) > 0) {
+					point.x = box.x - 144
 				}
 				break;
 			case 3:
-				if ((box.y -  144) > 0) {
+				if ((box.y - 144) > 0) {
 					point.y = box.y - 144
 				}
 				break;
@@ -461,7 +446,7 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 	}
 
 	private playRotation(direction: string) {
-		
+
 		var orientation: number = this.actionFlag;
 		switch (orientation) {
 			case 0:
@@ -670,8 +655,8 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 
 	}
 
-	private createBarrier(x, y,type:string,id:number) {
-		var barrier = new Barrier(type,id);
+	private createBarrier(x, y, type: string, id: number) {
+		var barrier = new Barrier(type, id);
 		barrier.x = (x - 1) * 144;
 		barrier.y = (y - 1) * 144;
 		return barrier;

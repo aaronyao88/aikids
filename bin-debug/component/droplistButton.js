@@ -10,13 +10,23 @@ r.prototype = e.prototype, t.prototype = new r();
 };
 var droplistButton = (function (_super) {
     __extends(droplistButton, _super);
-    function droplistButton() {
+    function droplistButton(roleArray) {
         var _this = _super.call(this) || this;
+        _this.moveList = new eui.List(); //步数选择下拉列表
+        _this.roleList = new eui.List(); // 角色下拉列表
         _this.isEdit = false; //步数选择按钮是否可以点击
         _this.isOnStage = false;
+        _this.btnType = "move";
+        //读取的变量
         _this.moveNumber = 1;
         _this.direction = "右";
-        _this.btnType = "move";
+        _this.role = "佩奇";
+        if (roleArray) {
+            _this.roleArray = roleArray;
+        }
+        else {
+            _this.roleArray = ["佩奇"];
+        }
         _this.skinName = "resource/component/droplistButton.exml";
         return _this;
     }
@@ -29,15 +39,25 @@ var droplistButton = (function (_super) {
     };
     droplistButton.prototype.init = function () {
         //列表
-        var list = new eui.List();
-        list.dataProvider = new eui.ArrayCollection(["1", "3", "2", "4", "5"]); //设计列表的index数以及每一项的内容
-        list.x = 0;
-        list.y = 50;
-        list.width = 150;
-        list.selectedIndex = 0;
-        this.list = list;
+        var moveArray = ["1", "3", "2", "4", "5"];
+        this.moveList = this.createList(moveArray);
+        this.roleList = this.createList(this.roleArray);
+        //设置角色
+        if (this.roleArray) {
+            this.role = this.roleArray[0];
+            this.selectRoleBtn.label = this.role;
+        }
         //划线
         this.initLine();
+    };
+    droplistButton.prototype.createList = function (arrayList) {
+        var list = new eui.List();
+        list.dataProvider = new eui.ArrayCollection(arrayList);
+        list.x = 0;
+        list.y = 50;
+        list.width = this.width;
+        list.selectedIndex = 0;
+        return list;
     };
     droplistButton.prototype.initLine = function () {
         this.line = new egret.Shape();
@@ -48,31 +68,50 @@ var droplistButton = (function (_super) {
         this.addChild(this.line);
         this.line.visible = false;
     };
-    droplistButton.prototype.onChange = function (evt) {
-        this.selectNumberBtn.label = this.list.selectedItem;
-        this.moveNumber = this.list.selectedItem;
+    droplistButton.prototype.moveListOnChange = function (evt) {
+        this.selectNumberBtn.label = this.moveList.selectedItem;
+        this.moveNumber = this.moveList.selectedItem;
         this.isOnStage = false;
-        this.removeChild(this.list);
+        this.removeChild(this.moveList);
     };
-    droplistButton.prototype.touch_tap = function (evt) {
+    droplistButton.prototype.roleListOnChange = function (evt) {
+        this.selectRoleBtn.label = this.roleList.selectedItem;
+        this.role = this.roleList.selectedItem;
+        this.isOnStage = false;
+        this.removeChild(this.roleList);
+    };
+    droplistButton.prototype.moveListTouchTap = function (evt) {
         if (this.isOnStage) {
-            this.removeChild(this.list);
+            this.removeChild(this.moveList);
             this.isOnStage = false;
         }
         else {
-            this.addChild(this.list);
-            this.list.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.onChange, this);
+            this.addChild(this.moveList);
+            this.moveList.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.moveListOnChange, this);
+            this.isOnStage = true;
+        }
+    };
+    droplistButton.prototype.roleListTouchTap = function (evt) {
+        if (this.isOnStage) {
+            this.removeChild(this.roleList);
+            this.isOnStage = false;
+        }
+        else {
+            this.addChild(this.roleList);
+            this.roleList.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.roleListOnChange, this);
             this.isOnStage = true;
         }
     };
     droplistButton.prototype.setEdit = function (val) {
         if (val) {
             this.isEdit = true;
-            this.selectNumberBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_tap, this);
+            this.selectNumberBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.moveListTouchTap, this);
+            this.selectRoleBtn.addEventListener(egret.TouchEvent.TOUCH_TAP, this.roleListTouchTap, this);
         }
         else {
             this.isEdit = false;
-            this.selectNumberBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_tap, this);
+            this.selectNumberBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.moveListTouchTap, this);
+            this.selectRoleBtn.removeEventListener(egret.TouchEvent.TOUCH_TAP, this.roleListTouchTap, this);
         }
     };
     droplistButton.prototype.isHit = function (obj2) {
