@@ -18,8 +18,14 @@ var Role = (function (_super) {
         _this.y = y;
         _this.type = type;
         //准备mc
-        var data = RES.getRes("renwu_json");
-        var txtr = RES.getRes("renwu_png");
+        if (_this.type == "lead") {
+            var data = RES.getRes("renwu_json");
+            var txtr = RES.getRes("renwu_png");
+        }
+        else {
+            var data = RES.getRes("renwu2_json");
+            var txtr = RES.getRes("renwu2_png");
+        }
         var mcFactory = new egret.MovieClipDataFactory(data, txtr);
         _this.displayObject = new egret.MovieClip(mcFactory.generateMovieClipData("walk"));
         _this.displayObject.anchorOffsetX = _this.displayObject.width / 2;

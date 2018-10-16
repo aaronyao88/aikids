@@ -13,8 +13,16 @@ class Role extends eui.Component {
 		this.y=y;
 		this.type=type;
 		//准备mc
-		var data = RES.getRes("renwu_json");
-		var txtr = RES.getRes("renwu_png");
+		if(this.type == "lead")
+		{
+			var data = RES.getRes("renwu_json");
+			var txtr = RES.getRes("renwu_png");
+		}else
+		{
+			var data = RES.getRes("renwu2_json");
+			var txtr = RES.getRes("renwu2_png");			
+		}
+
 		var mcFactory: egret.MovieClipDataFactory = new egret.MovieClipDataFactory(data, txtr);
 		this.displayObject = new egret.MovieClip(mcFactory.generateMovieClipData("walk"));
 		this.displayObject.anchorOffsetX = this.displayObject.width / 2;

@@ -1,7 +1,7 @@
 {
 	"groups": [
 		{
-			"keys": "BackBtn_png,BackBtn1_png,btn_disable_png,btn_music_down_png,btn_music_png,btn_sound_down_png,btn_sound_png,Dialog_png,GameBG1_jpg,GameBG2_jpg,GameBG3_jpg,gs_select_1_png,gs_select_dis_png,MoneyBG_png,MoneyPic_png,PageDownBtn_png,PageUpBtn_png,Result_png,ResultBtn_png,ResultBtn1_png,StartBtn_png,StartBtn1_png,WordFrame_png,YesBtn_jpg,YesBtn1_jpg,questions_json,buttonclick_mp3,right_mp3,type_word_mp3,wrong_mp3,dog_png,bone_png,level_json,Robot_json,texture_json,texture_png,renwu_png,renwu_json,run_mp3,rotation_mp3,button_down_png,button_up_png,selected_png,thumb_pb_png,track_pb_png,radiobutton_select_disabled_png,radiobutton_select_down_png,radiobutton_select_up_png,radiobutton_unselect_png,roundthumb_png,track_sb_png,thumb_png,track_png,tracklight_png,handle_png,off_png,on_png,border_png,header_png",
+			"keys": "BackBtn_png,BackBtn1_png,btn_disable_png,btn_music_down_png,btn_music_png,btn_sound_down_png,btn_sound_png,Dialog_png,GameBG1_jpg,GameBG2_jpg,GameBG3_jpg,gs_select_1_png,gs_select_dis_png,MoneyBG_png,MoneyPic_png,PageDownBtn_png,PageUpBtn_png,Result_png,ResultBtn_png,ResultBtn1_png,StartBtn_png,StartBtn1_png,WordFrame_png,YesBtn_jpg,YesBtn1_jpg,questions_json,buttonclick_mp3,right_mp3,type_word_mp3,wrong_mp3,dog_png,bone_png,level_json,Robot_json,texture_json,texture_png,renwu_png,renwu_json,run_mp3,rotation_mp3,button_down_png,button_up_png,selected_png,thumb_pb_png,track_pb_png,radiobutton_select_disabled_png,radiobutton_select_down_png,radiobutton_select_up_png,radiobutton_unselect_png,roundthumb_png,track_sb_png,thumb_png,track_png,tracklight_png,handle_png,off_png,on_png,border_png,header_png,renwu2_json,renwu2_png",
 			"name": "preload"
 		}
 	],
@@ -305,6 +305,16 @@
 			"name": "header_png",
 			"type": "image",
 			"url": "assets/Panel/header.png"
+		},
+		{
+			"name": "renwu2_json",
+			"type": "json",
+			"url": "assets/mc/renwu2.json"
+		},
+		{
+			"name": "renwu2_png",
+			"type": "image",
+			"url": "assets/mc/renwu2.png"
 		}
 	]
 }
