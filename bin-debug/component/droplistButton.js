@@ -20,7 +20,7 @@ var droplistButton = (function (_super) {
         //读取的变量
         _this.moveNumber = 1;
         _this.direction = "右";
-        _this.role = "佩奇";
+        _this.roleIndex = 0;
         if (roleArray) {
             _this.roleArray = roleArray;
         }
@@ -44,8 +44,7 @@ var droplistButton = (function (_super) {
         this.roleList = this.createList(this.roleArray);
         //设置角色
         if (this.roleArray) {
-            this.role = this.roleArray[0];
-            this.selectRoleBtn.label = this.role;
+            this.selectRoleBtn.label = this.roleArray[this.roleIndex];
         }
         //划线
         this.initLine();
@@ -76,7 +75,7 @@ var droplistButton = (function (_super) {
     };
     droplistButton.prototype.roleListOnChange = function (evt) {
         this.selectRoleBtn.label = this.roleList.selectedItem;
-        this.role = this.roleList.selectedItem;
+        this.roleIndex = this.roleList.selectedIndex;
         this.isOnStage = false;
         this.removeChild(this.roleList);
     };

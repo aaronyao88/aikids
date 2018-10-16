@@ -13,7 +13,7 @@ class droplistButton extends eui.Component implements eui.UIComponent {
 	//读取的变量
 	public moveNumber: number = 1;
 	public direction: string = "右";
-	public role:string = "佩奇";
+	public roleIndex:number = 0;
 	
 
 	public constructor(roleArray?) {
@@ -49,8 +49,7 @@ class droplistButton extends eui.Component implements eui.UIComponent {
 		//设置角色
 		if(this.roleArray)
 		{
-			this.role= this.roleArray[0];
-			this.selectRoleBtn.label=this.role;
+			this.selectRoleBtn.label=this.roleArray[this.roleIndex];
 		}
 		//划线
 		this.initLine();
@@ -90,7 +89,7 @@ class droplistButton extends eui.Component implements eui.UIComponent {
 
 	protected roleListOnChange(evt: egret.Event) {
 		this.selectRoleBtn.label = this.roleList.selectedItem;
-		this.role = this.roleList.selectedItem;
+		this.roleIndex = this.roleList.selectedIndex;
 		this.isOnStage = false;
 		this.removeChild(this.roleList);
 	}
