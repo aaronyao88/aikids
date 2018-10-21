@@ -9,6 +9,7 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 	private obj_move: droplistButton;       //移动按钮
 	private obj_rotation: rotationDroplistButton; //旋转按钮
 	private obj_push: pushDroplistButton; //推动按钮
+	private obj_click:clickButton; //龙卷风按钮
 	//系统按钮
 	private btn_nextlevel: eui.Button;   //下一关按钮
 	private btn_return: eui.Button; //返回按钮
@@ -30,8 +31,8 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 	//private actionFlag;	  /**MC执行的当前动作索引**/
 	private hit_result: boolean; //判断按钮是否在框内
 	private leveldata: LevelDataValue;    //本关数据
-	private btn_id: number = 0;     //创建按钮的ID
-	private barrier_id: number = 0;    // 障碍ID
+	private btn_id: number;     //创建按钮的ID
+	private barrier_id: number;    // 障碍ID
 	private levelIndex: number;  //关卡ID
 	private roleArray = [];   //角色名称列表
 
@@ -70,6 +71,8 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 		this.obj_rotation.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
 		this.obj_push.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBeginMove, this);
 		this.obj_push.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
+		this.obj_click.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBeginMove, this);
+		this.obj_click.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
 		this.btn_run.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_run, this);
 		this.btn_return.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_return, this);
 		this.btn_nextlevel.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_nextlevel, this);
@@ -98,13 +101,18 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 		this.gp_win.visible = false;
 		this.bone.visible = true;
 		this.leveldata = LevelDataManagement.getInstance().GetLevel(level);
+		this.btn_id=0;
+		this.barrier_id=0;
 
 		//初始化障碍
 		this.barrier = [];
 		this.barrier.push(this.createBarrier(3, 1, "wall", this.barrier_id++));
 		this.barrier.push(this.createBarrier(5, 4, "wall", this.barrier_id++));
+		this.barrier.push(this.createBarrier(5, 6, "wall", this.barrier_id++));
 		this.barrier.push(this.createBarrier(2, 3, "hole", this.barrier_id++));
 		this.barrier.push(this.createBarrier(2, 2, "box", this.barrier_id++));
+		this.barrier.push(this.createBarrier(4, 5, "tornado", this.barrier_id++));
+		this.barrier.push(this.createBarrier(1, 6, "tornadoBtn", this.barrier_id++,5));  //开关
 		this.barrier.forEach(element => {
 			this.gp_object_layer.addChild(element);
 		});
@@ -130,12 +138,23 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 		SoundManager.getInstance().playClick();
 		var target = event.currentTarget;
 		//创建可移动按钮
-		if (event.currentTarget.btnType == 'move') {
-			this.btn_temp = new droplistButton(this.roleArray);
-		} else if (event.currentTarget.btnType == 'rotate') {
-			this.btn_temp = new rotationDroplistButton(this.roleArray);
-		} else {
-			this.btn_temp = new pushDroplistButton(this.roleArray);
+		switch (event.currentTarget.btnType) {
+			case "move":
+				this.btn_temp = new droplistButton(this.roleArray);
+				break;
+			case "rotate":
+				this.btn_temp = new rotationDroplistButton(this.roleArray);
+				break;		
+			case "push":
+				this.btn_temp = new pushDroplistButton(this.roleArray);
+				break;		
+			case "click":
+				this.btn_temp = new clickButton(this.roleArray);
+				break;		
+			default:
+				this.btn_temp = new droplistButton(this.roleArray);				
+
+
 		}
 		this.btn_temp.btnID = this.btn_id;
 		this.btn_id++;
@@ -271,14 +290,18 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 			var btn: droplistButton = button_array[0];
 			button_array.splice(0, 1);
 			this.role=this.roles[btn.roleIndex];
+		//	this.gp_object_layer.addChild(this.role.displayObject);
 			var point: egret.Point = new egret.Point(this.role.displayObject.x, this.role.displayObject.y);
 			var isHitBarrier = false;
 			console.log("btn.btnType:" + btn.btnType);
 			switch (btn.btnType) {
 				case "move":
 					point = this.calPoint(this.role,1);
-					isHitBarrier = this.checkHitBarrier(point, this.barrier);
-					console.log("isHitBarrier:" + isHitBarrier);
+					if(this.role.type!='bird')
+					{
+						isHitBarrier = this.checkHitBarrier(point);
+						console.log("isHitBarrier:" + isHitBarrier);
+					}
 					if (isHitBarrier == false)
 						this.roleMCStartPlay(this.role,1);
 					break;
@@ -304,15 +327,25 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 						var boxPoint = this.calBoxPoint(this.role,hitBox);
 						this.roleMCStartPlay(this.role,1);
 						egret.Tween.get(hitBox, {}).to({ x: boxPoint.x, y: boxPoint.y }, 1 * 1000);
-						var isInHole = this.checkBoxInHole(boxPoint);
+						var isInHole = this.checkBoxInHole(boxPoint); //删除坑
 						if (isInHole) {
-							this.removeHitBox(hitBox);
+							this.removeHitBox(hitBox); //删除箱子
 
 						}
 					} else {
 						//lose
 						isHitBarrier = true;
 						console.log("no hit box");
+					}
+					break;
+				case "click":
+					SoundManager.getInstance().playClick();
+					var hitTornadoBtn = this.checkIsHitClickBtn(this.role);
+					if(!hitTornadoBtn)
+					{
+						isHitBarrier=true;
+						console.log("wrong hit tornadoBtn");
+
 					}
 					break;
 			}
@@ -336,6 +369,25 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 
 	}
 
+	private checkIsHitClickBtn(role:Role)
+	{
+		var isHit = false;
+		this.barrier.forEach((element, idx, array) => {
+			console.log("element id:"+ element.barrier_id +" checkIsHitBtn element type:" + element.type + " this barrier.x:" + element.x + " y:" + element.y + "element.pair_id:"+element.pair_id);
+
+			if (element.hitTestPoint(role.displayObject.x , role.displayObject.y ) && element.type == 'tornadoBtn' ) {
+				//删除按钮对应的风
+				console.log("element.pair_id:"+element.pair_id);
+				this.gp_object_layer.removeChild(this.barrier[element.pair_id]);
+				delete this.barrier[element.pair_id];
+				isHit = true;
+			}
+
+		});
+
+		return isHit;
+	}
+
 	private removeHitBox(box: Barrier) {
 		this.barrier.forEach((element, idx, array) => {
 			if (element.barrier_id == box.barrier_id) {
@@ -350,9 +402,6 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 	private afterBoxMove(point: egret.Point) {
 
 		console.log("afterBoxMove play sound, run animation");
-
-
-
 		this.barrier.forEach(element => {
 			console.log("element type:" + element.type + " this barrier.x:" + element.x + " y:" + element.y);
 		});
@@ -369,7 +418,7 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 			console.log("checkBoxInHole element type:" + element.type + " this barrier.x:" + element.x + " y:" + element.y);
 			if (element.hitTestPoint(point.x + 1, point.y + 1)) {
 				console.log("remove type:" + element.type);
-				//将box和element都从barrier中移除
+				//删除坑
 				delete this.barrier[idx];
 				isHit = true;
 			}
@@ -394,9 +443,10 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 
 	}
 
-	private checkHitBarrier(point: egret.Point, barrier) {
+	private checkHitBarrier(point: egret.Point) {
 		var hitResult = false
-		barrier.some(element => {
+		//检查是否撞到障碍物
+		this.barrier.some(element => {
 			if (element != undefined) {
 				if (element.hitTestPoint(point.x, point.y)) {
 					hitResult = true;
@@ -406,7 +456,21 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 
 			return false;
 		});
+		//检查是否撞到人
+		if(hitResult==false)
+		{
+			this.roles.some(element => {
+				if(element.displayObject!=undefined)
+				{
+					if(element.displayObject.hitTestPoint(point.x,point.y)){
+						hitResult=true;
+						return true;
+					}
+				}
+				return false;
 
+			});
+		}
 		return hitResult;
 
 	}
@@ -657,8 +721,8 @@ class CodeGame extends eui.Component implements eui.UIComponent {
 
 	}
 
-	private createBarrier(x, y, type: string, id: number) {
-		var barrier = new Barrier(type, id);
+	private createBarrier(x, y, type: string, id: number,pair_id?:number) {
+		var barrier = new Barrier(type, id,pair_id);
 		barrier.x = (x - 1) * 144;
 		barrier.y = (y - 1) * 144;
 		return barrier;

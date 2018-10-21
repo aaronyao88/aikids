@@ -10,11 +10,14 @@ r.prototype = e.prototype, t.prototype = new r();
 };
 var Barrier = (function (_super) {
     __extends(Barrier, _super);
-    function Barrier(type, id) {
+    function Barrier(type, id, pair_id) {
         var _this = _super.call(this) || this;
         _this.type = "wall";
         _this.type = type;
         _this.barrier_id = id;
+        if (pair_id) {
+            _this.pair_id = pair_id;
+        }
         _this.skinName = "resource/component/Barrier.exml";
         return _this;
     }
@@ -40,6 +43,14 @@ var Barrier = (function (_super) {
                 this.rect.width = 130;
                 this.rect.height = 130;
                 this.txt.text = "箱";
+                break;
+            case "tornado":
+                this.rect.fillColor = 0x31382A;
+                this.txt.text = "风";
+                break;
+            case "tornadoBtn":
+                this.rect.fillColor = 0x2177ED;
+                this.txt.text = "开关";
                 break;
             default:
                 this.rect.fillColor = 0x0f00ff;

@@ -22,9 +22,13 @@ var Role = (function (_super) {
             var data = RES.getRes("renwu_json");
             var txtr = RES.getRes("renwu_png");
         }
-        else {
+        else if (_this.type == "costar") {
             var data = RES.getRes("renwu2_json");
             var txtr = RES.getRes("renwu2_png");
+        }
+        else {
+            var data = RES.getRes("renwu3_json");
+            var txtr = RES.getRes("renwu3_png");
         }
         var mcFactory = new egret.MovieClipDataFactory(data, txtr);
         _this.displayObject = new egret.MovieClip(mcFactory.generateMovieClipData("walk"));

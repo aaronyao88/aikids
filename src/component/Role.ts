@@ -17,10 +17,14 @@ class Role extends eui.Component {
 		{
 			var data = RES.getRes("renwu_json");
 			var txtr = RES.getRes("renwu_png");
-		}else
+		}else if(this.type=="costar")
 		{
 			var data = RES.getRes("renwu2_json");
 			var txtr = RES.getRes("renwu2_png");			
+		}else
+		{
+			var data = RES.getRes("renwu3_json");
+			var txtr = RES.getRes("renwu3_png");						
 		}
 
 		var mcFactory: egret.MovieClipDataFactory = new egret.MovieClipDataFactory(data, txtr);

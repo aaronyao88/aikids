@@ -39,7 +39,7 @@ var droplistButton = (function (_super) {
     };
     droplistButton.prototype.init = function () {
         //列表
-        var moveArray = ["1", "3", "2", "4", "5"];
+        var moveArray = ["1", "2", "3", "4", "5"];
         this.moveList = this.createList(moveArray);
         this.roleList = this.createList(this.roleArray);
         //设置角色

@@ -6,7 +6,8 @@
 	"btn_type": ["moveforward","rotate"],
 	"role_list":[
 		{"name":"佩奇","type":"lead", "x":1,"y":2},
-		{"name":"乔治","type":"costar","x":3,"y":3}
+		{"name":"飞飞","type":"bird","x":3,"y":3},
+		{"name":"乔治","type":"costar","x":4,"y":4}
 	]
 }, 
 {

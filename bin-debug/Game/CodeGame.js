@@ -19,8 +19,6 @@ var CodeGame = (function (_super) {
         _this._touchStatus = false; //当前触摸状态，按下时，值为true  
         _this._distance = new egret.Point(); //鼠标点击时，鼠标与按钮的位置差
         _this._original = new egret.Point(); // btn原始位置
-        _this.btn_id = 0; //创建按钮的ID
-        _this.barrier_id = 0; // 障碍ID
         _this.roleArray = []; //角色名称列表
         console.log("CodeGame constructor");
         return _this;
@@ -47,6 +45,8 @@ var CodeGame = (function (_super) {
         this.obj_rotation.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
         this.obj_push.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBeginMove, this);
         this.obj_push.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
+        this.obj_click.addEventListener(egret.TouchEvent.TOUCH_BEGIN, this.touchBeginMove, this);
+        this.obj_click.addEventListener(egret.TouchEvent.TOUCH_END, this.touchEndMove, this);
         this.btn_run.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_run, this);
         this.btn_return.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_return, this);
         this.btn_nextlevel.addEventListener(egret.TouchEvent.TOUCH_TAP, this.touch_nextlevel, this);
@@ -70,12 +70,17 @@ var CodeGame = (function (_super) {
         this.gp_win.visible = false;
         this.bone.visible = true;
         this.leveldata = LevelDataManagement.getInstance().GetLevel(level);
+        this.btn_id = 0;
+        this.barrier_id = 0;
         //初始化障碍
         this.barrier = [];
         this.barrier.push(this.createBarrier(3, 1, "wall", this.barrier_id++));
         this.barrier.push(this.createBarrier(5, 4, "wall", this.barrier_id++));
+        this.barrier.push(this.createBarrier(5, 6, "wall", this.barrier_id++));
         this.barrier.push(this.createBarrier(2, 3, "hole", this.barrier_id++));
         this.barrier.push(this.createBarrier(2, 2, "box", this.barrier_id++));
+        this.barrier.push(this.createBarrier(4, 5, "tornado", this.barrier_id++));
+        this.barrier.push(this.createBarrier(1, 6, "tornadoBtn", this.barrier_id++, 5)); //开关
         this.barrier.forEach(function (element) {
             _this.gp_object_layer.addChild(element);
         });
@@ -99,14 +104,21 @@ var CodeGame = (function (_super) {
         SoundManager.getInstance().playClick();
         var target = event.currentTarget;
         //创建可移动按钮
-        if (event.currentTarget.btnType == 'move') {
-            this.btn_temp = new droplistButton(this.roleArray);
-        }
-        else if (event.currentTarget.btnType == 'rotate') {
-            this.btn_temp = new rotationDroplistButton(this.roleArray);
-        }
-        else {
-            this.btn_temp = new pushDroplistButton(this.roleArray);
+        switch (event.currentTarget.btnType) {
+            case "move":
+                this.btn_temp = new droplistButton(this.roleArray);
+                break;
+            case "rotate":
+                this.btn_temp = new rotationDroplistButton(this.roleArray);
+                break;
+            case "push":
+                this.btn_temp = new pushDroplistButton(this.roleArray);
+                break;
+            case "click":
+                this.btn_temp = new clickButton(this.roleArray);
+                break;
+            default:
+                this.btn_temp = new droplistButton(this.roleArray);
         }
         this.btn_temp.btnID = this.btn_id;
         this.btn_id++;
@@ -216,14 +228,17 @@ var CodeGame = (function (_super) {
             var btn = button_array[0];
             button_array.splice(0, 1);
             this.role = this.roles[btn.roleIndex];
+            //	this.gp_object_layer.addChild(this.role.displayObject);
             var point = new egret.Point(this.role.displayObject.x, this.role.displayObject.y);
             var isHitBarrier = false;
             console.log("btn.btnType:" + btn.btnType);
             switch (btn.btnType) {
                 case "move":
                     point = this.calPoint(this.role, 1);
-                    isHitBarrier = this.checkHitBarrier(point, this.barrier);
-                    console.log("isHitBarrier:" + isHitBarrier);
+                    if (this.role.type != 'bird') {
+                        isHitBarrier = this.checkHitBarrier(point);
+                        console.log("isHitBarrier:" + isHitBarrier);
+                    }
                     if (isHitBarrier == false)
                         this.roleMCStartPlay(this.role, 1);
                     break;
@@ -250,15 +265,23 @@ var CodeGame = (function (_super) {
                         var boxPoint = this.calBoxPoint(this.role, hitBox);
                         this.roleMCStartPlay(this.role, 1);
                         egret.Tween.get(hitBox, {}).to({ x: boxPoint.x, y: boxPoint.y }, 1 * 1000);
-                        var isInHole = this.checkBoxInHole(boxPoint);
+                        var isInHole = this.checkBoxInHole(boxPoint); //删除坑
                         if (isInHole) {
-                            this.removeHitBox(hitBox);
+                            this.removeHitBox(hitBox); //删除箱子
                         }
                     }
                     else {
                         //lose
                         isHitBarrier = true;
                         console.log("no hit box");
+                    }
+                    break;
+                case "click":
+                    SoundManager.getInstance().playClick();
+                    var hitTornadoBtn = this.checkIsHitClickBtn(this.role);
+                    if (!hitTornadoBtn) {
+                        isHitBarrier = true;
+                        console.log("wrong hit tornadoBtn");
                     }
                     break;
             }
@@ -276,6 +299,21 @@ var CodeGame = (function (_super) {
             this.checkHitTarget();
         }
         console.log("startToRunEnd");
+    };
+    CodeGame.prototype.checkIsHitClickBtn = function (role) {
+        var _this = this;
+        var isHit = false;
+        this.barrier.forEach(function (element, idx, array) {
+            console.log("element id:" + element.barrier_id + " checkIsHitBtn element type:" + element.type + " this barrier.x:" + element.x + " y:" + element.y + "element.pair_id:" + element.pair_id);
+            if (element.hitTestPoint(role.displayObject.x, role.displayObject.y) && element.type == 'tornadoBtn') {
+                //删除按钮对应的风
+                console.log("element.pair_id:" + element.pair_id);
+                _this.gp_object_layer.removeChild(_this.barrier[element.pair_id]);
+                delete _this.barrier[element.pair_id];
+                isHit = true;
+            }
+        });
+        return isHit;
     };
     CodeGame.prototype.removeHitBox = function (box) {
         var _this = this;
@@ -301,7 +339,7 @@ var CodeGame = (function (_super) {
             console.log("checkBoxInHole element type:" + element.type + " this barrier.x:" + element.x + " y:" + element.y);
             if (element.hitTestPoint(point.x + 1, point.y + 1)) {
                 console.log("remove type:" + element.type);
-                //将box和element都从barrier中移除
+                //删除坑
                 delete _this.barrier[idx];
                 isHit = true;
             }
@@ -320,9 +358,10 @@ var CodeGame = (function (_super) {
         });
         return hitResult;
     };
-    CodeGame.prototype.checkHitBarrier = function (point, barrier) {
+    CodeGame.prototype.checkHitBarrier = function (point) {
         var hitResult = false;
-        barrier.some(function (element) {
+        //检查是否撞到障碍物
+        this.barrier.some(function (element) {
             if (element != undefined) {
                 if (element.hitTestPoint(point.x, point.y)) {
                     hitResult = true;
@@ -331,6 +370,18 @@ var CodeGame = (function (_super) {
             }
             return false;
         });
+        //检查是否撞到人
+        if (hitResult == false) {
+            this.roles.some(function (element) {
+                if (element.displayObject != undefined) {
+                    if (element.displayObject.hitTestPoint(point.x, point.y)) {
+                        hitResult = true;
+                        return true;
+                    }
+                }
+                return false;
+            });
+        }
         return hitResult;
     };
     CodeGame.prototype.calBoxPoint = function (role, box) {
@@ -546,8 +597,8 @@ var CodeGame = (function (_super) {
         this.parent.addChild(SceneLevel.getInstance());
         this.parent.removeChild(this);
     };
-    CodeGame.prototype.createBarrier = function (x, y, type, id) {
-        var barrier = new Barrier(type, id);
+    CodeGame.prototype.createBarrier = function (x, y, type, id, pair_id) {
+        var barrier = new Barrier(type, id, pair_id);
         barrier.x = (x - 1) * 144;
         barrier.y = (y - 1) * 144;
         return barrier;

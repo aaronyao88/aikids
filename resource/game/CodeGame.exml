@@ -54,9 +54,10 @@
 				</e:Skin>
 				</e:skinName>
 			</e:Button>
-			<ns1:droplistButton id="obj_move" width="200" height="50" x="144" y="60" anchorOffsetX="0" anchorOffsetY="0" skinName="droplistButtonSkin"/>
+			<ns1:droplistButton id="obj_move" width="200" height="50" x="44" y="60" anchorOffsetX="0" anchorOffsetY="0" skinName="droplistButtonSkin"/>
 			<ns1:rotationDroplistButton id="obj_rotation" width="200" height="50" x="0" y="7"/>
 			<ns1:pushDroplistButton id="obj_push" width="200" height="50" x="342" y="7"/>
+			<ns1:clickButton id="obj_click" width="200" height="50" x="290" y="58"/>
 		</e:Group>
 		<e:Scroller id="sc_code_panel" width="720" height="156" x="0" y="114" anchorOffsetX="0" anchorOffsetY="0" scaleX="1" scaleY="1">
 			<e:Rect id="code_rect" fillColor="0x13f2df" width="720" x="60" y="2"/>

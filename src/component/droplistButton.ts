@@ -42,7 +42,7 @@ class droplistButton extends eui.Component implements eui.UIComponent {
 	protected init() {
 		
 		//列表
-		var moveArray=["1", "3", "2", "4", "5"];
+		var moveArray=["1", "2", "3", "4", "5"];
 		this.moveList = this.createList(moveArray);
 		this.roleList = this.createList(this.roleArray);
 		

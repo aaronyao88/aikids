@@ -16,6 +16,7 @@
 		"bin-debug/component/droplistButton.js",
 		"bin-debug/Data/Element/LevelRequireElement.js",
 		"bin-debug/ThemeAdapter.js",
+		"bin-debug/component/clickButton.js",
 		"bin-debug/Platform.js",
 		"bin-debug/component/pushDroplistButton.js",
 		"bin-debug/component/Role.js",
