@@ -17,8 +17,7 @@ class rotationDroplistButton extends droplistButton {
 	protected moveListOnChange(evt: egret.Event) {
 		this.selectNumberBtn.label = this.moveList.selectedItem.name;
 		this.direction = this.moveList.selectedItem.value;
-		this.isOnStage = false;
-		this.removeChild(this.moveList);
+		this.setMoveList(false);
 	}
 }
 

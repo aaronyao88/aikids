@@ -16,6 +16,8 @@ var droplistButton = (function (_super) {
         _this.roleList = new eui.List(); // 角色下拉列表
         _this.isEdit = false; //步数选择按钮是否可以点击
         _this.isOnStage = false;
+        _this.isMoveListOnStage = false;
+        _this.isRoleListOnStage = false;
         _this.btnType = "move";
         //读取的变量
         _this.moveNumber = 1;
@@ -70,35 +72,63 @@ var droplistButton = (function (_super) {
     droplistButton.prototype.moveListOnChange = function (evt) {
         this.selectNumberBtn.label = this.moveList.selectedItem.name;
         this.moveNumber = this.moveList.selectedItem.value;
-        this.isOnStage = false;
-        this.removeChild(this.moveList);
+        this.setMoveList(false);
     };
     droplistButton.prototype.moveListTouchTap = function (evt) {
-        if (this.isOnStage) {
-            this.removeChild(this.moveList);
-            this.isOnStage = false;
+        if (this.isMoveListOnStage) {
+            this.setMoveList(false);
         }
         else {
-            this.addChild(this.moveList);
+            this.removeList();
+            this.setMoveList(true);
             this.moveList.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.moveListOnChange, this);
-            this.isOnStage = true;
         }
     };
     droplistButton.prototype.roleListOnChange = function (evt) {
         this.selectRoleBtn.label = this.roleList.selectedItem.name;
         this.selectedRoleType = this.roleList.selectedItem.value;
-        this.isOnStage = false;
-        this.removeChild(this.roleList);
+        this.setRoleList(false);
     };
     droplistButton.prototype.roleListTouchTap = function (evt) {
-        if (this.isOnStage) {
-            this.removeChild(this.roleList);
-            this.isOnStage = false;
+        if (this.isRoleListOnStage) {
+            this.setRoleList(false);
         }
         else {
-            this.addChild(this.roleList);
+            this.removeList();
+            this.setRoleList(true);
             this.roleList.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.roleListOnChange, this);
+        }
+    };
+    droplistButton.prototype.removeList = function () {
+        if (this.isMoveListOnStage) {
+            this.setMoveList(false);
+        }
+        if (this.isRoleListOnStage) {
+            this.setRoleList(false);
+        }
+    };
+    droplistButton.prototype.setMoveList = function (result) {
+        if (result) {
+            this.addChild(this.moveList);
             this.isOnStage = true;
+            this.isMoveListOnStage = true;
+        }
+        else {
+            this.removeChild(this.moveList);
+            this.isOnStage = false;
+            this.isMoveListOnStage = false;
+        }
+    };
+    droplistButton.prototype.setRoleList = function (result) {
+        if (result) {
+            this.addChild(this.roleList);
+            this.isOnStage = true;
+            this.isRoleListOnStage = true;
+        }
+        else {
+            this.removeChild(this.roleList);
+            this.isOnStage = false;
+            this.isRoleListOnStage = false;
         }
     };
     droplistButton.prototype.setEdit = function (val) {

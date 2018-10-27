@@ -25,8 +25,7 @@ var rotationDroplistButton = (function (_super) {
     rotationDroplistButton.prototype.moveListOnChange = function (evt) {
         this.selectNumberBtn.label = this.moveList.selectedItem.name;
         this.direction = this.moveList.selectedItem.value;
-        this.isOnStage = false;
-        this.removeChild(this.moveList);
+        this.setMoveList(false);
     };
     return rotationDroplistButton;
 }(droplistButton));

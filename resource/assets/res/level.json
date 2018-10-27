@@ -1,67 +1,51 @@
 ﻿[
 {
-	"start":{"x":1,"y":1},
+	"end": {"x":2,"y":1},
+	"tip": [{"name":"yao","say":"11111"},{"name":"huan","say":"22222"}],
+	"btn_type": ["moveforward","rotate"],
+	"role_list":[
+		{"name":"佩奇","type":"lead", "x":1,"y":1}
+	]
+},
+{
+	"end": {"x":3,"y":1},
+	"tip": [{"name":"yao","say":"11111"},{"name":"huan","say":"22222"}],
+	"btn_type": ["moveforward","rotate"],
+	"role_list":[
+		{"name":"佩奇","type":"lead", "x":1,"y":1}
+	]
+},
+{
+	"end": {"x":3,"y":1},
+	"tip": [{"name":"yao","say":"11111"},{"name":"huan","say":"22222"}],
+	"btn_type": ["moveforward","rotate"],
+	"role_list":[
+		{"name":"佩奇","type":"lead", "x":1,"y":1},
+		{"name":"乔治","type":"costar","x":4,"y":4}
+	],
+	"barrier_list":[
+		{"type":"wall","x":2,"y":1},
+		{"type":"wall","x":5,"y":4},
+		{"type":"wall","x":5,"y":6}
+	]
+},
+{
 	"end": {"x":5,"y":5},
 	"tip": [{"name":"yao","say":"11111"},{"name":"huan","say":"22222"}],
 	"btn_type": ["moveforward","rotate"],
 	"role_list":[
-		{"name":"佩奇","type":"lead", "x":1,"y":2},
+		{"name":"佩奇","type":"lead", "x":1,"y":1},
 		{"name":"飞飞","type":"bird","x":3,"y":3},
 		{"name":"乔治","type":"costar","x":4,"y":4}
+	],
+	"barrier_list":[
+		{"type":"wall","x":3,"y":1},
+		{"type":"wall","x":5,"y":4},
+		{"type":"wall","x":5,"y":6},
+		{"type":"hole","x":2,"y":3},
+		{"type":"box","x":2,"y":2},
+		{"type":"tornado","x":4,"y":5},
+		{"type":"tornadoBtn","x":1,"y":5,"pair_id":5}
 	]
-}, 
-{
-	"start":{"x":1,"y":5},
-	"end": {"x":3,"y":3},
-	"tip": [{"name":"yao","say":"11111"},{"name":"huan","say":"22222"}],
-	"btn_type": ["moveforward","rotate"]
-}, 
-{
-	"start":{"x":2,"y":2},
-	"end": {"x":4,"y":4},
-	"tip": [{"name":"yao","say":"11111"},{"name":"huan","say":"22222"}],
-	"btn_type": ["moveforward","rotate"]
-},
-{
-	"start":{"x":1,"y":2},
-	"end": {"x":3,"y":4},
-	"tip": [{"name":"yao","say":"11111"},{"name":"huan","say":"22222"}],
-	"btn_type": ["moveforward","rotate"]
-},
-{
-	"start":{"x":5,"y":6},
-	"end": {"x":2,"y":2},
-	"tip": [{"name":"yao","say":"11111"},{"name":"huan","say":"22222"}],
-	"btn_type": ["moveforward","rotate"]
-},
-{
-	"start":{"x":3,"y":2},
-	"end": {"x":4,"y":4},
-	"tip": [{"name":"yao","say":"11111"},{"name":"huan","say":"22222"}],
-	"btn_type": ["moveforward","rotate"]
-},
-{
-	"start":{"x":3,"y":3},
-	"end": {"x":1,"y":5},
-	"tip": [{"name":"yao","say":"11111"},{"name":"huan","say":"22222"}],
-	"btn_type": ["moveforward","rotate"]
-},
-{
-	"start":{"x":4,"y":2},
-	"end": {"x":3,"y":1},
-	"tip": [{"name":"yao","say":"11111"},{"name":"huan","say":"22222"}],
-	"btn_type": ["moveforward","rotate"]
-},
-{
-	"start":{"x":5,"y":4},
-	"end": {"x":2,"y":3},
-	"tip": [{"name":"yao","say":"11111"},{"name":"huan","say":"22222"}],
-	"btn_type": ["moveforward","rotate"]
-},
-{
-	"start":{"x":3,"y":5},
-	"end": {"x":1,"y":6},
-	"tip": [{"name":"yao","say":"11111"},{"name":"huan","say":"22222"}],
-	"btn_type": ["moveforward","rotate"]
 }
 ]

@@ -8,6 +8,8 @@ class droplistButton extends eui.Component implements eui.UIComponent {
 	public line: egret.Shape;
 	public isEdit: boolean = false;  //步数选择按钮是否可以点击
 	public isOnStage: boolean = false;
+	public isMoveListOnStage: boolean = false;
+	public isRoleListOnStage: boolean = false;
 	public btnID: number;
 	public btnType: string = "move";
 	//读取的变量
@@ -67,7 +69,6 @@ class droplistButton extends eui.Component implements eui.UIComponent {
 
 
 	protected initLine() {
-
 		this.line = new egret.Shape();
 		this.line.graphics.lineStyle(5, 0xff00ff);
 		this.line.graphics.moveTo(this.width, 0);
@@ -80,19 +81,17 @@ class droplistButton extends eui.Component implements eui.UIComponent {
 	protected moveListOnChange(evt: egret.Event) {
 		this.selectNumberBtn.label = this.moveList.selectedItem.name;
 		this.moveNumber = this.moveList.selectedItem.value;
-		this.isOnStage = false;
-		this.removeChild(this.moveList);
+		this.setMoveList(false);
 	}
 
 
 	protected moveListTouchTap(evt: egret.Event) {
-		if (this.isOnStage) {
-			this.removeChild(this.moveList);
-			this.isOnStage = false;
+		if (this.isMoveListOnStage) {
+			this.setMoveList(false);
 		} else {
-			this.addChild(this.moveList);
+			this.removeList();
+			this.setMoveList(true);
 			this.moveList.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.moveListOnChange, this);
-			this.isOnStage = true;
 		}
 
 	}
@@ -100,21 +99,57 @@ class droplistButton extends eui.Component implements eui.UIComponent {
 	protected roleListOnChange(evt: egret.Event) {
 		this.selectRoleBtn.label = this.roleList.selectedItem.name;
 		this.selectedRoleType = this.roleList.selectedItem.value;
-		this.isOnStage = false;
-		this.removeChild(this.roleList);
+		this.setRoleList(false);
 	}
 
 
 	protected roleListTouchTap(evt: egret.Event) {
-		if (this.isOnStage) {
-			this.removeChild(this.roleList);
-			this.isOnStage = false;
+		if (this.isRoleListOnStage) {
+			this.setRoleList(false);
 		} else {
-			this.addChild(this.roleList);
+			this.removeList();
+			this.setRoleList(true);
 			this.roleList.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.roleListOnChange, this);
-			this.isOnStage = true;
 		}
 
+	}
+
+	protected removeList() {
+		if (this.isMoveListOnStage) {
+			this.setMoveList(false);
+		}
+		if (this.isRoleListOnStage) {
+			this.setRoleList(false);
+		}
+	}
+
+	protected setMoveList(result:boolean)
+	{
+		if(result)
+		{
+			this.addChild(this.moveList);
+			this.isOnStage = true;
+			this.isMoveListOnStage = true;
+		}else
+		{
+			this.removeChild(this.moveList);
+			this.isOnStage = false;
+			this.isMoveListOnStage = false;			
+		}
+	}
+	protected setRoleList(result:boolean)
+	{
+		if(result)
+		{
+			this.addChild(this.roleList);
+			this.isOnStage = true;
+			this.isRoleListOnStage = true;
+		}else
+		{
+			this.removeChild(this.roleList);
+			this.isOnStage = false;
+			this.isRoleListOnStage = false;			
+		}
 	}
 
 	public setEdit(val: boolean) {
