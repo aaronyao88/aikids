@@ -20,12 +20,11 @@ var droplistButton = (function (_super) {
         //读取的变量
         _this.moveNumber = 1;
         _this.direction = "右";
-        _this.roleIndex = 0;
         if (roleArray) {
             _this.roleArray = roleArray;
         }
         else {
-            _this.roleArray = ["佩奇"];
+            _this.roleArray = [{ "name": "佩奇", "value": "lead" }];
         }
         _this.skinName = "resource/component/droplistButton.exml";
         return _this;
@@ -39,12 +38,13 @@ var droplistButton = (function (_super) {
     };
     droplistButton.prototype.init = function () {
         //列表
-        var moveArray = ["1", "2", "3", "4", "5"];
+        var moveArray = [{ "name": "1", "value": 1 }, { "name": "2", "value": 2 }, { "name": "3", "value": 3 }, { "name": "4", "value": 4 }, { "name": "5", "value": 5 }];
         this.moveList = this.createList(moveArray);
         this.roleList = this.createList(this.roleArray);
         //设置角色
         if (this.roleArray) {
-            this.selectRoleBtn.label = this.roleArray[this.roleIndex];
+            this.selectRoleBtn.label = this.roleArray[0].name;
+            this.selectedRoleType = this.roleArray[0].value;
         }
         //划线
         this.initLine();
@@ -68,16 +68,10 @@ var droplistButton = (function (_super) {
         this.line.visible = false;
     };
     droplistButton.prototype.moveListOnChange = function (evt) {
-        this.selectNumberBtn.label = this.moveList.selectedItem;
-        this.moveNumber = this.moveList.selectedItem;
+        this.selectNumberBtn.label = this.moveList.selectedItem.name;
+        this.moveNumber = this.moveList.selectedItem.value;
         this.isOnStage = false;
         this.removeChild(this.moveList);
-    };
-    droplistButton.prototype.roleListOnChange = function (evt) {
-        this.selectRoleBtn.label = this.roleList.selectedItem;
-        this.roleIndex = this.roleList.selectedIndex;
-        this.isOnStage = false;
-        this.removeChild(this.roleList);
     };
     droplistButton.prototype.moveListTouchTap = function (evt) {
         if (this.isOnStage) {
@@ -89,6 +83,12 @@ var droplistButton = (function (_super) {
             this.moveList.addEventListener(eui.ItemTapEvent.ITEM_TAP, this.moveListOnChange, this);
             this.isOnStage = true;
         }
+    };
+    droplistButton.prototype.roleListOnChange = function (evt) {
+        this.selectRoleBtn.label = this.roleList.selectedItem.name;
+        this.selectedRoleType = this.roleList.selectedItem.value;
+        this.isOnStage = false;
+        this.removeChild(this.roleList);
     };
     droplistButton.prototype.roleListTouchTap = function (evt) {
         if (this.isOnStage) {

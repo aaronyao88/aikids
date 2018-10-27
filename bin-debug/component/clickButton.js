@@ -13,16 +13,12 @@ var clickButton = (function (_super) {
     function clickButton(roleArray) {
         var _this = _super.call(this, roleArray) || this;
         _this.btnType = "click";
+        _this.roleArray = [{ "name": "飞飞", "value": "bird" }];
         _this.skinName = "resource/component/clickButton.exml";
         return _this;
     }
-    clickButton.prototype.partAdded = function (partName, instance) {
-        _super.prototype.partAdded.call(this, partName, instance);
-    };
-    clickButton.prototype.childrenCreated = function () {
-        _super.prototype.childrenCreated.call(this);
-    };
     return clickButton;
 }(droplistButton));
 __reflect(clickButton.prototype, "clickButton");
+window["clickButton"] = clickButton;
 //# sourceMappingURL=clickButton.js.map

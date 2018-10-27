@@ -1,20 +1,16 @@
 class clickButton extends droplistButton {
 	public btnType: string = "click";
-	
+
+
+
 	public constructor(roleArray?) {
 		super(roleArray);
+		this.roleArray = [{ "name": "飞飞", "value": "bird" }];
 		this.skinName = "resource/component/clickButton.exml";
 	}
 
-	protected partAdded(partName:string,instance:any):void
-	{
-		super.partAdded(partName,instance);
-	}
 
 
-	protected childrenCreated():void
-	{
-		super.childrenCreated();
-	}
-	
 }
+
+window["clickButton"] = clickButton;

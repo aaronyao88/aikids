@@ -10,13 +10,13 @@ class rotationDroplistButton extends droplistButton {
 	protected init() {
 		super.init();
 		//列表
-		var moveArray=["左", "右"];
+		var moveArray=[{"name":"左","value":"左"},{"name":"右","value":"右"}];
 		this.moveList = this.createList(moveArray);
 	}
 
 	protected moveListOnChange(evt: egret.Event) {
-		this.selectNumberBtn.label = this.moveList.selectedItem;
-		this.direction = this.moveList.selectedItem;
+		this.selectNumberBtn.label = this.moveList.selectedItem.name;
+		this.direction = this.moveList.selectedItem.value;
 		this.isOnStage = false;
 		this.removeChild(this.moveList);
 	}

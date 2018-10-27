@@ -2,8 +2,8 @@ class droplistButton extends eui.Component implements eui.UIComponent {
 
 	public selectNumberBtn: eui.Button;     //步数选择按钮
 	public selectRoleBtn: eui.Button;     //角色选择按钮
-	public moveList: eui.List =new eui.List();  //步数选择下拉列表
-	public roleList:eui.List = new eui.List() ; // 角色下拉列表
+	public moveList: eui.List = new eui.List();  //步数选择下拉列表
+	public roleList: eui.List = new eui.List(); // 角色下拉列表
 	public roleArray; //角色列表
 	public line: egret.Shape;
 	public isEdit: boolean = false;  //步数选择按钮是否可以点击
@@ -13,19 +13,17 @@ class droplistButton extends eui.Component implements eui.UIComponent {
 	//读取的变量
 	public moveNumber: number = 1;
 	public direction: string = "右";
-	public roleIndex:number = 0;
-	
+	public selectedRoleType: string;
+
 
 	public constructor(roleArray?) {
 		super();
-		if(roleArray)
-		{
+		if (roleArray) {
 			this.roleArray = roleArray;
-		}else
-		{
-			this.roleArray = ["佩奇"];
+		} else {
+			this.roleArray = [{ "name": "佩奇", "value": "lead" }];
 		}
-		
+
 		this.skinName = "resource/component/droplistButton.exml";
 	}
 
@@ -40,31 +38,30 @@ class droplistButton extends eui.Component implements eui.UIComponent {
 	}
 
 	protected init() {
-		
+
 		//列表
-		var moveArray=["1", "2", "3", "4", "5"];
+		var moveArray = [{ "name": "1", "value": 1 }, { "name": "2", "value": 2 }, { "name": "3", "value": 3 }, { "name": "4", "value": 4 }, { "name": "5", "value": 5 }];
 		this.moveList = this.createList(moveArray);
 		this.roleList = this.createList(this.roleArray);
-		
+
 		//设置角色
-		if(this.roleArray)
-		{
-			this.selectRoleBtn.label=this.roleArray[this.roleIndex];
+		if (this.roleArray) {
+			this.selectRoleBtn.label = this.roleArray[0].name;
+			this.selectedRoleType = this.roleArray[0].value;
 		}
 		//划线
 		this.initLine();
 	}
 
-	protected createList(arrayList)
-	{
+	protected createList(arrayList) {
 		var list = new eui.List();
 		list.dataProvider = new eui.ArrayCollection(arrayList);
-		list.x=0;
-		list.y=50;
+		list.x = 0;
+		list.y = 50;
 		list.width = this.width;
 		list.selectedIndex = 0;
 		return list;
-		
+
 	}
 
 
@@ -81,18 +78,12 @@ class droplistButton extends eui.Component implements eui.UIComponent {
 	}
 
 	protected moveListOnChange(evt: egret.Event) {
-		this.selectNumberBtn.label = this.moveList.selectedItem;
-		this.moveNumber = this.moveList.selectedItem;
+		this.selectNumberBtn.label = this.moveList.selectedItem.name;
+		this.moveNumber = this.moveList.selectedItem.value;
 		this.isOnStage = false;
 		this.removeChild(this.moveList);
 	}
 
-	protected roleListOnChange(evt: egret.Event) {
-		this.selectRoleBtn.label = this.roleList.selectedItem;
-		this.roleIndex = this.roleList.selectedIndex;
-		this.isOnStage = false;
-		this.removeChild(this.roleList);
-	}
 
 	protected moveListTouchTap(evt: egret.Event) {
 		if (this.isOnStage) {
@@ -105,6 +96,14 @@ class droplistButton extends eui.Component implements eui.UIComponent {
 		}
 
 	}
+
+	protected roleListOnChange(evt: egret.Event) {
+		this.selectRoleBtn.label = this.roleList.selectedItem.name;
+		this.selectedRoleType = this.roleList.selectedItem.value;
+		this.isOnStage = false;
+		this.removeChild(this.roleList);
+	}
+
 
 	protected roleListTouchTap(evt: egret.Event) {
 		if (this.isOnStage) {
